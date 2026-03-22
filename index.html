@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生暉會員系統</title>
+
+  <script>
+    // 如果被包在 iframe，就強制跳到最外層
+    if (window.top !== window.self) {
+      window.top.location.href = window.location.href;
+    }
+  </script>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      margin: 0;
+    }
+    .box {
+      max-width: 420px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    h2 {
+      margin-top: 0;
+      margin-bottom: 18px;
+    }
+    input, button, a.btn {
+      width: 100%;
+      padding: 14px;
+      box-sizing: border-box;
+      font-size: 16px;
+      margin-top: 12px;
+      border-radius: 8px;
+    }
+    input {
+      border: 1px solid #ddd;
+    }
+    button, a.btn {
+      background: #111;
+      color: #fff;
+      border: none;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #777;
+      cursor: not-allowed;
+    }
+    .msg {
+      margin-top: 16px;
+      line-height: 1.6;
+      font-size: 16px;
+      white-space: pre-line;
+    }
+    .ok { color: #0a7a2f; }
+    .err { color: #c62828; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>生暉會員系統</h2>
+
+    <input id="card" placeholder="輸入會員卡號">
+    <input id="phone" placeholder="手機號碼">
+
+    <button id="bindBtn" onclick="bindMember()" disabled>綁定會員</button>
+
+    <a class="btn" href="https://script.google.com/macros/s/AKfycbxeKS8i7hfDSNOVej_j6rB6NHfuBvPCR9kY1pSgRvPE5Bta1HIW2D1yE6WnYce6ETNWAQ/exec" target="_top">
+      新會員註冊
+    </a>
+
+    <div id="msg" class="msg err">LINE 初始化中...</div>
+  </div>
+
+  <script>
+  const LIFF_ID = "2009558075-UsjkbzNW";
+  let userId = "";
+  let lineName = "";
+  let liffReady = false;
+
+  function setMsg(text, isError) {
+    const msg = document.getElementById("msg");
+    msg.className = "msg " + (isError ? "err" : "ok");
+    msg.innerText = text || "";
+  }
+
+  function setReady(ready) {
+    liffReady = ready;
+    document.getElementById("bindBtn").disabled = !ready;
+  }
+
+  async function initLIFF() {
+    setReady(false);
+
+    const nowUrl = location.href;
+    setMsg("步驟1\n目前網址：\n" + nowUrl, true);
+
+    try {
+      if (!window.liff) {
+        setMsg("步驟2 失敗\nLIFF SDK 未載入", true);
+        return;
+      }
+
+      setMsg("步驟2\nSDK 已載入\n目前網址：\n" + location.href, true);
+
+      const initPromise = liff.init({ liffId: LIFF_ID });
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("liff.init 超過 10 秒未完成")), 10000)
+      );
+
+      setMsg("步驟3\n開始執行 liff.init()", true);
+      await Promise.race([initPromise, timeoutPromise]);
+
+      setMsg("步驟4\nliff.init 完成", true);
+
+      const inClient = liff.isInClient();
+      setMsg("步驟5\nisInClient = " + inClient, true);
+
+      if (!inClient) {
+        setMsg("步驟5 失敗\n不是從 LINE 內開啟", true);
+        return;
+      }
+
+      const loggedIn = liff.isLoggedIn();
+      setMsg("步驟6\nisLoggedIn = " + loggedIn, true);
+
+      if (!loggedIn) {
+        setMsg("步驟6 失敗\nLINE 尚未登入", true);
+        return;
+      }
+
+      setMsg("步驟7\n開始取得 profile", true);
+      const profile = await liff.getProfile();
+
+      userId = profile.userId || "";
+      lineName = profile.displayName || "";
+
+      if (!userId) {
+        setMsg("步驟7 失敗\n取不到 userId", true);
+        return;
+      }
+
+      setReady(true);
+      setMsg("成功\n已取得 LINE 身分：" + lineName, false);
+
+    } catch (err) {
+      setMsg(
+        "初始化失敗\n" +
+        "錯誤：" + (err && err.message ? err.message : String(err)) + "\n\n" +
+        "目前網址：\n" + location.href,
+        true
+      );
+    }
+  }
+
+  function bindMember() {
+    const card = document.getElementById("card").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+
+    if (!card || !phone) {
+      setMsg("請輸入會員卡號與手機號碼", true);
+      return;
+    }
+
+    if (!liffReady) {
+      setMsg("LINE 尚未初始化完成", true);
+      return;
+    }
+
+    if (!userId) {
+      setMsg("無法取得 LINE 身分，請重新開啟頁面", true);
+      return;
+    }
+
+    setMsg("送出綁定中...", true);
+    setReady(false);
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        setMsg(res.message, !res.ok);
+        if (res.ok) {
+          document.getElementById("card").value = "";
+          document.getElementById("phone").value = "";
+        }
+        setReady(true);
+      })
+      .withFailureHandler(function(err) {
+        setMsg("系統錯誤：" + (err && err.message ? err.message : err), true);
+        setReady(true);
+      })
+      .bindOldMember(card, phone, userId, lineName);
+  }
+
+  window.onload = function() {
+    initLIFF();
+  };
+</script>
+</body>
+</html>
