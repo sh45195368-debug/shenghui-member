@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生暉電子會員卡</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 16px;
+    }
+    .box {
+      width: 100%;
+      box-sizing: border-box;
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 420px;
+      margin: 0 auto;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    h1 {
+      font-size: 22px;
+      margin: 0 0 16px 0;
+      text-align: center;
+    }
+    .status {
+      margin-top: 12px;
+      line-height: 1.6;
+      white-space: pre-line;
+      font-size: 16px;
+    }
+    .ok { color: #0a7a2f; }
+    .err { color: #c62828; }
+
+    .cardWrap {
+      display: none;
+      margin-top: 12px;
+      border: 1px solid #e5e5e5;
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .name {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .cardNo {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .hint {
+      color: #666;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .btn {
+      width: 100%;
+      box-sizing: border-box;
+      display: block;
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #111;
+      color: #fff;
+      text-decoration: none;
+      text-align: center;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>生暉電子會員卡</h1>
+
+    <div id="status" class="status err">LINE 初始化中...</div>
+
+    <div id="cardWrap" class="cardWrap">
+      <div class="title">生暉食品電子會員卡</div>
+      <div id="memberName" class="name"></div>
+      <div id="memberCardNo" class="cardNo"></div>
+      <svg id="barcode"></svg>
+      <div class="hint">結帳時請出示此條碼</div>
+    </div>
+
+    <a class="btn" href="./index.html">返回會員首頁</a>
+  </div>
+
+  <script>
+    const LIFF_ID = "2009558075-UsjkbzNW";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwhy6xOUVJIFYtgG2gzImXzegSoXt6TEaUZCK7oF3k8vs_AUxISEJozbTKQHF0chu-b/exec";
+
+    function setStatus(text, isError) {
+      const el = document.getElementById("status");
+      el.className = "status " + (isError ? "err" : "ok");
+      el.innerText = text || "";
+    }
+
+    async function init() {
+      try {
+        setStatus("LINE 初始化中...", true);
+
+        await liff.init({ liffId: LIFF_ID });
+
+        if (!liff.isInClient()) {
+          setStatus("請從 LINE 內開啟此頁面", true);
+          return;
+        }
+
+        const profile = await liff.getProfile();
+        const userId = profile.userId || "";
+
+        if (!userId) {
+          setStatus("無法取得 LINE 身分", true);
+          return;
+        }
+
+        setStatus("讀取會員卡資料中...", true);
+
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify({
+            action: "getMemberCardByUserId",
+            userId: userId
+          })
+        });
+
+        const result = await res.json();
+
+        if (!result.ok) {
+          setStatus(result.message, true);
+          return;
+        }
+
+        document.getElementById("status").style.display = "none";
+        document.getElementById("cardWrap").style.display = "block";
+        document.getElementById("memberName").innerText = result.name || "";
+        document.getElementById("memberCardNo").innerText = result.cardNo || "";
+
+        JsBarcode("#barcode", result.cardNo || "", {
+          format: "CODE128",
+          width: 2,
+          height: 70,
+          displayValue: true,
+          margin: 10
+        });
+
+      } catch (err) {
+        setStatus("系統錯誤：" + (err.message || err), true);
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
