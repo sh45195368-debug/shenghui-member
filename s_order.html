@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生暉食品營運｜今日特價下單</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", Arial, sans-serif;
+      background: #f4f6f8;
+      color: #2b2b2b;
+    }
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #557c8a, #7aa0a6);
+      color: #fff;
+      border-radius: 18px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+    .hero p {
+      margin: 0;
+      line-height: 1.7;
+      opacity: 0.95;
+    }
+    .notice {
+      background: #fff7e8;
+      border: 1px solid #f0d49a;
+      color: #7a5610;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin: 16px 0;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      color: #3e5d67;
+    }
+    .product {
+      border: 1px solid #dbe3e8;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #fbfcfd;
+    }
+    .product:last-child { margin-bottom: 0; }
+    .product-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: start;
+      margin-bottom: 8px;
+    }
+    .product-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: #24363c;
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #e7f3f6;
+      color: #3f6d78;
+      white-space: nowrap;
+    }
+    .price-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0 10px;
+      flex-wrap: wrap;
+    }
+    .old-price {
+      text-decoration: line-through;
+      color: #9a9a9a;
+      font-size: 14px;
+    }
+    .new-price {
+      color: #d64b2d;
+      font-weight: bold;
+      font-size: 22px;
+    }
+    .desc {
+      color: #5c6e75;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .qty-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .qty-row label {
+      font-size: 14px;
+      color: #54656c;
+      min-width: 74px;
+    }
+    input[type="number"], input[type="text"], input[type="tel"], textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #cfd8dd;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+      background: #fff;
+    }
+    input[type="number"] {
+      max-width: 130px;
+    }
+    .field {
+      margin-bottom: 14px;
+    }
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #53646b;
+      font-weight: bold;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .summary {
+      background: #f5fafb;
+      border: 1px solid #d8eaee;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 14px;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+    .total {
+      font-size: 24px;
+      font-weight: bold;
+      color: #d64b2d;
+    }
+    .btn {
+      border: 0;
+      width: 100%;
+      padding: 15px 18px;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-primary {
+      background: #4e7a85;
+      color: #fff;
+      margin-top: 14px;
+    }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-secondary {
+      background: #edf3f5;
+      color: #48636b;
+      margin-top: 10px;
+    }
+    .footer-note {
+      font-size: 13px;
+      color: #6d7e84;
+      line-height: 1.7;
+      margin-top: 12px;
+    }
+    .mini-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #3f5f69;
+      margin-bottom: 10px;
+    }
+    .line-box {
+      background: #f1fbf1;
+      border: 1px solid #cfe9cf;
+      color: #2f6a31;
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 12px;
+      line-height: 1.7;
+      font-size: 14px;
+      word-break: break-all;
+    }
+    @media (max-width: 820px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>今日特價下單</h1>
+      <p>歡迎直接勾選今日特價商品後送出。送出後將由生暉食品營運人員與您確認庫存、金額與取貨／配送方式。</p>
+    </div>
+
+    <div class="notice">
+      今日特價頁的重點不是展示，而是讓客戶快速下單。<br>
+      這一版先用最簡單、最好上線的方式做：選商品 → 填資料 → 送出到 LINE。
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>今日特價商品</h2>
+
+        <div class="product">
+          <div class="product-head">
+            <div class="product-name">動物性鮮奶油 1L</div>
+            <div class="tag">本日主打</div>
+          </div>
+          <div class="price-row">
+            <span class="old-price">原價 $220</span>
+            <span class="new-price">特價 $199</span>
+          </div>
+          <div class="desc">適合烘焙、甜點、打發使用。數量有限，售完為止。</div>
+          <div class="qty-row">
+            <label for="qty1">下單數量</label>
+            <input type="number" id="qty1" min="0" value="0" onchange="updateSummary()" />
+          </div>
+        </div>
+
+        <div class="product">
+          <div class="product-head">
+            <div class="product-name">透明方形餐盒 50入</div>
+            <div class="tag">包材熱賣</div>
+          </div>
+          <div class="price-row">
+            <span class="old-price">原價 $95</span>
+            <span class="new-price">特價 $85</span>
+          </div>
+          <div class="desc">門市與商業客都常用，適合熟食、甜點、便當配菜包裝。</div>
+          <div class="qty-row">
+            <label for="qty2">下單數量</label>
+            <input type="number" id="qty2" min="0" value="0" onchange="updateSummary()" />
+          </div>
+        </div>
+
+        <div class="product">
+          <div class="product-head">
+            <div class="product-name">蛋黃液 1kg</div>
+            <div class="tag">限量供應</div>
+          </div>
+          <div class="price-row">
+            <span class="old-price">原價 $180</span>
+            <span class="new-price">特價 $165</span>
+          </div>
+          <div class="desc">餐飲、烘焙客戶常用商品，建議先下單保留。</div>
+          <div class="qty-row">
+            <label for="qty3">下單數量</label>
+            <input type="number" id="qty3" min="0" value="0" onchange="updateSummary()" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>填寫下單資料</h2>
+
+        <div class="field">
+          <label for="customerName">姓名 / 店名</label>
+          <input type="text" id="customerName" placeholder="例如：王先生 / 富利早餐加盟店" />
+        </div>
+
+        <div class="field">
+          <label for="customerPhone">手機號碼</label>
+          <input type="tel" id="customerPhone" placeholder="例如：0912345678" />
+        </div>
+
+        <div class="field">
+          <label for="customerType">需求類型</label>
+          <select id="customerType">
+            <option value="門市自取">門市自取</option>
+            <option value="商業配送">商業配送</option>
+            <option value="外送需求">外送需求</option>
+            <option value="先詢價">先詢價</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="customerNote">備註</label>
+          <textarea id="customerNote" placeholder="例如：今天下午取貨 / 請先幫我留貨 / 配送時段需求"></textarea>
+        </div>
+
+        <div class="mini-title">訂單摘要</div>
+        <div class="summary" id="summaryBox">
+          尚未選擇商品
+        </div>
+
+        <button class="btn btn-primary" onclick="sendToLine()">送出 LINE 下單訊息</button>
+        <button class="btn btn-secondary" onclick="clearForm()">清空重填</button>
+
+        <div class="line-box">
+          <strong>設定提醒：</strong><br>
+          這個按鈕目前是把訂單內容組成文字，直接跳到 LINE。<br>
+          你只要把下方程式裡的 LINE 連結改成你的官方帳號網址，就能直接用。
+        </div>
+
+        <div class="footer-note">
+          後續第二版可以再升級成：<br>
+          1. 直接寫進 Google Sheet<br>
+          2. 自動產生訂單編號<br>
+          3. 商業客常買清單<br>
+          4. 顯示是否已送出成功
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      { id: 'qty1', name: '動物性鮮奶油 1L', price: 199 },
+      { id: 'qty2', name: '透明方形餐盒 50入', price: 85 },
+      { id: 'qty3', name: '蛋黃液 1kg', price: 165 }
+    ];
+
+    function updateSummary() {
+      const summaryBox = document.getElementById('summaryBox');
+      let lines = [];
+      let total = 0;
+
+      products.forEach(p => {
+        const qty = Number(document.getElementById(p.id).value || 0);
+        if (qty > 0) {
+          const subtotal = qty * p.price;
+          total += subtotal;
+          lines.push(`${p.name} × ${qty} = $${subtotal}`);
+        }
+      });
+
+      if (lines.length === 0) {
+        summaryBox.innerHTML = '尚未選擇商品';
+        return;
+      }
+
+      summaryBox.innerHTML = lines.join('<br>') + `<hr style="border:none;border-top:1px solid #d9e5e9;margin:10px 0;">預估合計：<span class="total">$${total}</span>`;
+    }
+
+    function sendToLine() {
+      const name = document.getElementById('customerName').value.trim();
+      const phone = document.getElementById('customerPhone').value.trim();
+      const type = document.getElementById('customerType').value;
+      const note = document.getElementById('customerNote').value.trim();
+
+      let orderLines = [];
+      let total = 0;
+
+      products.forEach(p => {
+        const qty = Number(document.getElementById(p.id).value || 0);
+        if (qty > 0) {
+          const subtotal = qty * p.price;
+          total += subtotal;
+          orderLines.push(`- ${p.name} × ${qty} = $${subtotal}`);
+        }
+      });
+
+      if (!name) {
+        alert('請先填寫姓名或店名');
+        return;
+      }
+
+      if (!phone) {
+        alert('請先填寫手機號碼');
+        return;
+      }
+
+      if (orderLines.length === 0) {
+        alert('請至少選擇一項商品');
+        return;
+      }
+
+      const message = `生暉食品營運｜今日特價下單\n\n姓名/店名：${name}\n手機：${phone}\n需求類型：${type}\n\n下單內容：\n${orderLines.join('\n')}\n\n預估合計：$${total}\n\n備註：${note || '無'}`;
+
+      // 把這個網址換成你的 LINE 官方帳號聊天連結
+      const lineUrl = `https://line.me/R/oaMessage/@gogo-food/?${encodeURIComponent(message)}`;
+      window.open(lineUrl, '_blank');
+    }
+
+    function clearForm() {
+      document.getElementById('customerName').value = '';
+      document.getElementById('customerPhone').value = '';
+      document.getElementById('customerType').selectedIndex = 0;
+      document.getElementById('customerNote').value = '';
+      products.forEach(p => document.getElementById(p.id).value = 0);
+      updateSummary();
+    }
+
+    updateSummary();
+  </script>
+</body>
+</html>
