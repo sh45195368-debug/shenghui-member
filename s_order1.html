@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生暉食品營運｜今日特價下單</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --brand: #5f7f8f;
+      --brand-dark: #496773;
+      --accent: #c98d52;
+      --accent-soft: #f7efe5;
+      --bg: #f3f5f6;
+      --card: #ffffff;
+      --text: #243238;
+      --muted: #66777e;
+      --line: #d7e0e4;
+      --ok-bg: #edf8ee;
+      --ok-line: #cbe6cd;
+      --warn-bg: #fff7e8;
+      --warn-line: #efd59f;
+      --danger: #c94d2a;
+      --shadow: 0 10px 26px rgba(0,0,0,0.08);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 10px 14px;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      font-weight: bold;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--brand), #8ba5b0);
+      color: #fff;
+      border-radius: 28px;
+      padding: 26px 22px;
+      box-shadow: 0 12px 30px rgba(67, 98, 110, 0.22);
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -30px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.10);
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      margin: 0;
+      line-height: 1.8;
+      opacity: 0.96;
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.26);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.7fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 23px;
+      color: var(--brand-dark);
+    }
+
+    .section-note,
+    .tips,
+    .notice,
+    .delivery-box,
+    .line-box {
+      border-radius: var(--radius-md);
+      padding: 14px;
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    .notice {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-line);
+      color: #7b5920;
+      margin-bottom: 16px;
+    }
+
+    .section-note {
+      background: #f5fafb;
+      border: 1px solid #dbe9ed;
+      color: #4c656d;
+      margin-bottom: 14px;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .product {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      background: linear-gradient(180deg, #ffffff, #fbfcfd);
+    }
+
+    .product-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .product-name {
+      font-size: 19px;
+      font-weight: bold;
+      color: #213138;
+      margin-bottom: 4px;
+    }
+
+    .product-spec {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .tag-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .tag.hot {
+      background: #fff0ea;
+      color: #bb4b2c;
+      border-color: #f1c6b8;
+    }
+
+    .tag.bulk {
+      background: #edf7ff;
+      color: #336b95;
+      border-color: #c9def0;
+    }
+
+    .tag.limited {
+      background: #f7f0ff;
+      color: #6e4f9f;
+      border-color: #decdf7;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 8px 0 10px;
+    }
+
+    .old-price {
+      text-decoration: line-through;
+      color: #9a9a9a;
+      font-size: 14px;
+    }
+
+    .new-price {
+      color: var(--danger);
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    .save-badge {
+      background: var(--accent-soft);
+      color: #9a612a;
+      border: 1px solid #edd1b2;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .desc {
+      color: #5c6d74;
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    .qty-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .qty-row label {
+      font-size: 14px;
+      color: #56676d;
+      min-width: 78px;
+      font-weight: bold;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    input[type="tel"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #ccd7dc;
+      border-radius: 14px;
+      font-size: 16px;
+      outline: none;
+      background: #fff;
+      transition: 0.15s ease;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #89a7b2;
+      box-shadow: 0 0 0 3px rgba(107, 145, 159, 0.12);
+    }
+
+    input[type="number"] {
+      max-width: 150px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      color: #53646b;
+      font-weight: bold;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .summary {
+      background: #f5fafb;
+      border: 1px solid #d7e9ee;
+      border-radius: 16px;
+      padding: 15px;
+      margin-top: 12px;
+      line-height: 1.9;
+      font-size: 15px;
+      color: #36515a;
+    }
+
+    .total {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--danger);
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      border: 0;
+      width: 100%;
+      padding: 15px 18px;
+      border-radius: 16px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(74, 108, 120, 0.20);
+    }
+
+    .btn-secondary {
+      background: #edf3f5;
+      color: #4b646c;
+    }
+
+    .tips {
+      background: #f7fafc;
+      border: 1px solid #e1eaef;
+      color: #55676f;
+      margin-top: 14px;
+    }
+
+    .delivery-box {
+      background: var(--ok-bg);
+      border: 1px solid var(--ok-line);
+      color: #35623b;
+      margin-top: 14px;
+    }
+
+    .line-box {
+      background: #eef8ff;
+      border: 1px solid #cae1f5;
+      color: #345d7a;
+      margin-top: 14px;
+      word-break: break-all;
+    }
+
+    .subgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .sticky-card {
+      position: sticky;
+      top: 16px;
+    }
+
+    .footer-space {
+      height: 24px;
+    }
+
+    @media (max-width: 920px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .sticky-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 14px;
+      }
+      .hero {
+        border-radius: 22px;
+        padding: 22px 16px;
+      }
+      .hero h1 {
+        font-size: 28px;
+      }
+      .subgrid,
+      .btn-row {
+        grid-template-columns: 1fr;
+      }
+      .card {
+        padding: 16px;
+      }
+      .new-price {
+        font-size: 22px;
+      }
+      .total {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand-chip">生暉食品營運｜今日特價專區</div>
+      <div class="brand-chip">營業時間：週一至週五 8:30–19:30／假日 9:00–19:00</div>
+    </div>
+
+    <section class="hero">
+      <h1>今日特價下單</h1>
+      <p>
+        這一頁的目的只有一個：讓客戶快速選品、快速送單。<br>
+        送出後由生暉食品營運人員確認庫存、金額、取貨或配送方式，適合門市客、外送客、商業補貨客直接使用。
+      </p>
+      <div class="hero-actions">
+        <span class="hero-badge">今日優惠</span>
+        <span class="hero-badge">快速下單</span>
+        <span class="hero-badge">商業補貨可用</span>
+      </div>
+    </section>
+
+    <div class="notice">
+      <strong>這是第三版自動更新架構：</strong><br>
+      員工不用進 GitHub，只要改 Google Sheet 的商品名稱、原價、特價、標籤與說明，這個頁面就會自動更新。
+    </div>
+
+    <div class="layout">
+      <div>
+        <div class="card">
+          <h2>本日特價商品</h2>
+          <div class="section-note">
+            員工只要維護 Google Sheet，這裡會自動抓取啟用中的前 4 筆特價商品。建議每天只放 3～4 個主打商品，客戶越容易選，轉單率越高。
+          </div>
+
+          <div class="product-list" id="productList">
+            <div class="product">
+              <div class="product-name">載入中...</div>
+              <div class="desc">正在讀取今日特價商品資料。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card sticky-card">
+          <h2>快速送單</h2>
+
+          <div class="subgrid">
+            <div class="field">
+              <label for="customerName">姓名 / 店名</label>
+              <input type="text" id="customerName" placeholder="例如：王先生 / 富利早餐加盟店" />
+            </div>
+            <div class="field">
+              <label for="customerPhone">手機號碼</label>
+              <input type="tel" id="customerPhone" placeholder="例如：0912345678" />
+            </div>
+          </div>
+
+          <div class="subgrid">
+            <div class="field">
+              <label for="customerType">需求類型</label>
+              <select id="customerType">
+                <option value="門市自取">門市自取</option>
+                <option value="商業配送">商業配送</option>
+                <option value="外送需求">外送需求</option>
+                <option value="先詢價">先詢價</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="pickupTime">希望時段</label>
+              <select id="pickupTime">
+                <option value="儘快聯絡">儘快聯絡</option>
+                <option value="上午">上午</option>
+                <option value="下午">下午</option>
+                <option value="晚上">晚上</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="customerNote">備註</label>
+            <textarea id="customerNote" placeholder="例如：今天下午取貨、請先保留、可否一起配送、需要報價單"></textarea>
+          </div>
+
+          <div class="delivery-box">
+            <strong>下單提醒</strong><br>
+            送單後不代表已完成保留，仍以門市或客服確認庫存與回覆為準。
+          </div>
+
+          <div class="summary" id="summaryBox">尚未選擇商品</div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="sendToLine()">送出 LINE 下單</button>
+            <button class="btn btn-secondary" onclick="clearForm()">清空重填</button>
+          </div>
+
+          <div class="line-box">
+            <strong>正式上線前要做的地方：</strong><br>
+            1. 建立一張 Google Sheet「今日特價設定表」<br>
+            2. 將工作表發布成 CSV 或 JSON 可讀取格式<br>
+            3. 把下方程式裡的 SHEET_CSV_URL 改成你的表單網址<br>
+            4. 把 LINE 官方帳號 ID 改成你的正式帳號
+          </div>
+
+          <div class="tips">
+            <strong>下一步建議：</strong><br>
+            第三版就可以改成「送出後同步寫入 Google Sheet」，你內部就能直接收單、編號、追蹤處理狀態。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-space"></div>
+  </div>
+
+  <script>
+    const SHEET_CSV_URL = '請改成你的GoogleSheet發布CSV網址';
+    const LINE_OA_ID = '@gogo-food';
+    const MAX_PRODUCTS = 4;
+
+    let products = [];
+
+    function currency(n) {
+      return '$' + Number(n || 0).toLocaleString('zh-TW');
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function getTagClass(tagText) {
+      const text = String(tagText || '');
+      if (text.includes('限量')) return 'limited';
+      if (text.includes('補貨') || text.includes('熱賣') || text.includes('包材')) return 'bulk';
+      return 'hot';
+    }
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let cell = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            cell += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          row.push(cell);
+          cell = '';
+        } else if ((char === '
+' || char === '
+') && !inQuotes) {
+          if (char === '
+' && next === '
+') i++;
+          row.push(cell);
+          if (row.some(v => String(v).trim() !== '')) rows.push(row);
+          row = [];
+          cell = '';
+        } else {
+          cell += char;
+        }
+      }
+
+      if (cell.length > 0 || row.length > 0) {
+        row.push(cell);
+        if (row.some(v => String(v).trim() !== '')) rows.push(row);
+      }
+
+      if (!rows.length) return [];
+      const headers = rows[0].map(h => String(h || '').trim());
+      return rows.slice(1).map(r => {
+        const obj = {};
+        headers.forEach((h, idx) => obj[h] = (r[idx] || '').trim());
+        return obj;
+      });
+    }
+
+    function normalizeProducts(rawRows) {
+      return rawRows
+        .filter(r => {
+          const enabled = String(r['啟用'] || r['enabled'] || '').toUpperCase();
+          return enabled === 'TRUE' || enabled === '1' || enabled === 'Y' || enabled === 'YES';
+        })
+        .sort((a, b) => Number(a['排序'] || 999) - Number(b['排序'] || 999))
+        .slice(0, MAX_PRODUCTS)
+        .map((r, idx) => ({
+          id: 'qty' + (idx + 1),
+          name: r['商品名稱'] || '未命名商品',
+          spec: r['規格說明'] || '',
+          oldPrice: Number(r['原價'] || 0),
+          price: Number(r['特價'] || 0),
+          tag1: r['標籤1'] || '',
+          tag2: r['標籤2'] || '',
+          desc: r['商品說明'] || ''
+        }));
+    }
+
+    function renderProducts() {
+      const productList = document.getElementById('productList');
+
+      if (!products.length) {
+        productList.innerHTML = `
+          <div class="product">
+            <div class="product-name">目前沒有可顯示商品</div>
+            <div class="desc">請到 Google Sheet 確認是否有啟用商品，且欄位名稱正確。</div>
+          </div>
+        `;
+        updateSummary();
+        return;
+      }
+
+      productList.innerHTML = products.map((p, index) => {
+        const save = Math.max(0, p.oldPrice - p.price);
+        const tags = [p.tag1, p.tag2].filter(Boolean).map(tag => `
+          <span class="tag ${getTagClass(tag)}">${escapeHtml(tag)}</span>
+        `).join('');
+
+        return `
+          <div class="product">
+            <div class="product-top">
+              <div>
+                <div class="product-name">${escapeHtml(p.name)}</div>
+                <div class="product-spec">規格：${escapeHtml(p.spec || '未填寫')}</div>
+              </div>
+              <div class="tag-group">${tags}</div>
+            </div>
+            <div class="price-row">
+              <span class="old-price">原價 ${currency(p.oldPrice)}</span>
+              <span class="new-price">特價 ${currency(p.price)}</span>
+              <span class="save-badge">現省 ${currency(save)}</span>
+            </div>
+            <div class="desc">${escapeHtml(p.desc || '請填寫商品說明')}</div>
+            <div class="qty-row">
+              <label for="${p.id}">下單數量</label>
+              <input type="number" id="${p.id}" min="0" value="0" onchange="updateSummary()" />
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      updateSummary();
+    }
+
+    async function loadProducts() {
+      const productList = document.getElementById('productList');
+
+      if (!SHEET_CSV_URL || SHEET_CSV_URL.includes('請改成你的GoogleSheet')) {
+        productList.innerHTML = `
+          <div class="product">
+            <div class="product-name">尚未設定 Google Sheet</div>
+            <div class="desc">請先把 SHEET_CSV_URL 改成你發布後的 Google Sheet CSV 網址。</div>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const response = await fetch(SHEET_CSV_URL + (SHEET_CSV_URL.includes('?') ? '&' : '?') + 't=' + Date.now());
+        if (!response.ok) throw new Error('讀取失敗');
+        const csvText = await response.text();
+        const rawRows = parseCSV(csvText);
+        products = normalizeProducts(rawRows);
+        renderProducts();
+      } catch (error) {
+        productList.innerHTML = `
+          <div class="product">
+            <div class="product-name">商品載入失敗</div>
+            <div class="desc">請確認 Google Sheet 是否已發布為 CSV，網址是否正確，且允許外部讀取。</div>
+          </div>
+        `;
+      }
+    }
+
+    function updateSummary() {
+      const summaryBox = document.getElementById('summaryBox');
+      let lines = [];
+      let total = 0;
+
+      products.forEach(p => {
+        const el = document.getElementById(p.id);
+        const qty = Number(el ? el.value : 0);
+        if (qty > 0) {
+          const subtotal = qty * p.price;
+          total += subtotal;
+          lines.push(`${p.name} × ${qty} = ${currency(subtotal)}`);
+        }
+      });
+
+      if (lines.length === 0) {
+        summaryBox.innerHTML = '尚未選擇商品';
+        return;
+      }
+
+      summaryBox.innerHTML = `
+        <strong>訂單摘要</strong><br>
+        ${lines.join('<br>')}
+        <hr style="border:none;border-top:1px solid #d9e5e9;margin:10px 0;">
+        預估合計：<span class="total">${currency(total)}</span>
+      `;
+    }
+
+    function sendToLine() {
+      const name = document.getElementById('customerName').value.trim();
+      const phone = document.getElementById('customerPhone').value.trim();
+      const type = document.getElementById('customerType').value;
+      const pickupTime = document.getElementById('pickupTime').value;
+      const note = document.getElementById('customerNote').value.trim();
+
+      let orderLines = [];
+      let total = 0;
+
+      products.forEach(p => {
+        const el = document.getElementById(p.id);
+        const qty = Number(el ? el.value : 0);
+        if (qty > 0) {
+          const subtotal = qty * p.price;
+          total += subtotal;
+          orderLines.push(`- ${p.name} × ${qty} = ${currency(subtotal)}`);
+        }
+      });
+
+      if (!name) {
+        alert('請先填寫姓名或店名');
+        return;
+      }
+
+      if (!phone) {
+        alert('請先填寫手機號碼');
+        return;
+      }
+
+      if (orderLines.length === 0) {
+        alert('請至少選擇一項商品');
+        return;
+      }
+
+      if (!LINE_OA_ID || LINE_OA_ID.includes('你的LINE')) {
+        alert('請先設定 LINE 官方帳號 ID');
+        return;
+      }
+
+      const message = `生暉食品營運｜今日特價下單
+
+姓名/店名：${name}
+手機：${phone}
+需求類型：${type}
+希望時段：${pickupTime}
+
+下單內容：
+${orderLines.join('
+')}
+
+預估合計：${currency(total)}
+
+備註：${note || '無'}`;
+      const lineUrl = `https://line.me/R/oaMessage/${LINE_OA_ID}/?${encodeURIComponent(message)}`;
+      window.open(lineUrl, '_blank');
+    }
+
+    function clearForm() {
+      document.getElementById('customerName').value = '';
+      document.getElementById('customerPhone').value = '';
+      document.getElementById('customerType').selectedIndex = 0;
+      document.getElementById('pickupTime').selectedIndex = 0;
+      document.getElementById('customerNote').value = '';
+      products.forEach(p => {
+        const el = document.getElementById(p.id);
+        if (el) el.value = 0;
+      });
+      updateSummary();
+    }
+
+    loadProducts();
+  </script>
+</body>
+</html>
