@@ -324,56 +324,54 @@
       if (text.includes('補貨') || text.includes('熱賣') || text.includes('包材')) return 'bulk';
       return 'hot';
     }
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let cell = '';
+  let inQuotes = false;
 
-    function parseCSV(text) {
-      const rows = [];
-      let row = [];
-      let cell = '';
-      let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const next = text[i + 1];
 
-      for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        const next = text[i + 1];
-
-        if (char === '"') {
-          if (inQuotes && next === '"') {
-            cell += '"';
-            i++;
-          } else {
-            inQuotes = !inQuotes;
-          }
-        } else if (char === ',' && !inQuotes) {
-          row.push(cell);
-          cell = '';
-        } else if ((char === '
-' || char === '
-') && !inQuotes) {
-          if (char === '
-' && next === '
-') i++;
-          row.push(cell);
-          if (row.some(v => String(v).trim() !== '')) rows.push(row);
-          row = [];
-          cell = '';
-        } else {
-          cell += char;
-        }
+    if (char === '"') {
+      if (inQuotes && next === '"') {
+        cell += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
       }
-
-      if (cell.length > 0 || row.length > 0) {
-        row.push(cell);
-        if (row.some(v => String(v).trim() !== '')) rows.push(row);
-      }
-
-      if (!rows.length) return [];
-      const headers = rows[0].map(h => String(h || '').trim());
-      return rows.slice(1).map(r => {
-        const obj = {};
-        headers.forEach((h, idx) => obj[h] = (r[idx] || '').trim());
-        return obj;
-      });
+    } else if (char === ',' && !inQuotes) {
+      row.push(cell);
+      cell = '';
+    } else if ((char === '\n' || char === '\r') && !inQuotes) {
+      if (char === '\r' && next === '\n') i++;
+      row.push(cell);
+      if (row.some(v => String(v).trim() !== '')) rows.push(row);
+      row = [];
+      cell = '';
+    } else {
+      cell += char;
     }
+  }
 
+  if (cell.length > 0 || row.length > 0) {
+    row.push(cell);
+    if (row.some(v => String(v).trim() !== '')) rows.push(row);
+  }
+
+  if (!rows.length) return [];
+
+  const headers = rows[0].map(h => String(h || '').trim());
+  return rows.slice(1).map(r => {
+    const obj = {};
+    headers.forEach((h, idx) => {
+      obj[h] = (r[idx] || '').trim();
+    });
+    return obj;
+  });
+}
+    
     function normalizeProducts(rawRows) {
       return rawRows
         .filter(r => {
