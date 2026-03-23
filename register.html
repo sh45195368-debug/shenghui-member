@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生暉食品會員註冊</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background:#f5f5f5;
+      padding:16px;
+      margin:0;
+    }
+    .box {
+      width:100%;
+      max-width:420px;
+      margin:0 auto;
+      background:#fff;
+      padding:20px;
+      border-radius:16px;
+      box-shadow:0 4px 16px rgba(0,0,0,0.12);
+      box-sizing:border-box;
+    }
+    h2 { margin-top:0; }
+    label {
+      display:block;
+      margin-top:12px;
+      margin-bottom:6px;
+      font-weight:bold;
+    }
+    input, select {
+      width:100%;
+      padding:12px;
+      box-sizing:border-box;
+      font-size:16px;
+      border:1px solid #ddd;
+      border-radius:8px;
+    }
+    button, a.btn {
+      width:100%;
+      padding:14px;
+      margin-top:20px;
+      background:#111;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      font-size:16px;
+      text-align:center;
+      text-decoration:none;
+      display:block;
+      box-sizing:border-box;
+    }
+    .msg {
+      margin-top:16px;
+      line-height:1.6;
+      white-space:pre-line;
+    }
+    .ok { color:#0a7a2f; }
+    .err { color:#c62828; }
+
+    .card {
+      margin-top:20px;
+      text-align:center;
+      background:#fff;
+      padding:20px;
+      border-radius:12px;
+      box-shadow:0 4px 16px rgba(0,0,0,0.12);
+      display:none;
+    }
+    .cardno {
+      font-size:28px;
+      font-weight:bold;
+      margin:12px 0;
+      word-break:break-all;
+    }
+    img {
+      max-width:100%;
+      height:auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>生暉食品會員註冊</h2>
+
+    <label>姓名</label>
+    <input id="name" placeholder="請輸入姓名">
+
+    <label>手機</label>
+    <input id="phone" placeholder="請輸入手機">
+
+    <label>客戶類型</label>
+    <select id="type">
+      <option value="一般零售客">一般零售客</option>
+      <option value="商業客">商業客</option>
+      <option value="外送客">外送客</option>
+    </select>
+
+    <label>店名 / 公司名（選填）</label>
+    <input id="company" placeholder="選填">
+
+    <label>主要需求（選填）</label>
+    <select id="need">
+      <option value="">請選擇</option>
+      <option value="烘焙">烘焙</option>
+      <option value="飲料">飲料</option>
+      <option value="南北貨">南北貨</option>
+      <option value="包材">包材</option>
+    </select>
+
+    <label>生日（生日優惠用）</label>
+    <input type="date" id="birthday">
+
+    <button id="sendBtn" onclick="send()">送出註冊</button>
+
+    <a class="btn" href="./index.html">返回會員首頁</a>
+
+    <div id="msg" class="msg err">LINE 初始化中...</div>
+  </div>
+
+  <div id="card" class="card"></div>
+
+  <script>
+    // 這裡用你現在首頁那個 LIFF ID
+    const LIFF_ID = "2009558075-UsjkbzNW";
+
+    // 這裡換成你「新部署」後的 Apps Script /exec 網址
+    const API_URL = "https://script.google.com/macros/s/AKfycbydHmebdQd5E68vx46tNB0nYZALToMWswpjJMLlLTdQTylGBcKmhGoe3lcvQtu76fI6vQ/exec";
+
+    let userId = "";
+    let lineName = "";
+    let ready = false;
+
+    function setMsg(text, isError) {
+      const el = document.getElementById("msg");
+      el.className = "msg " + (isError ? "err" : "ok");
+      el.innerText = text || "";
+    }
+
+    function setReady(v) {
+      ready = v;
+      document.getElementById("sendBtn").disabled = !v;
+    }
+
+    async function initLIFF() {
+      try {
+        setReady(false);
+        setMsg("LINE 初始化中...", true);
+
+        await liff.init({ liffId: LIFF_ID });
+
+        if (!liff.isInClient()) {
+          setMsg("請從 LINE 內開啟此頁面", true);
+          return;
+        }
+
+        const profile = await liff.getProfile();
+        userId = profile.userId || "";
+        lineName = profile.displayName || "";
+
+        if (!userId) {
+          setMsg("無法取得 LINE 身分", true);
+          return;
+        }
+
+        setReady(true);
+        setMsg("已取得 LINE 身分，可開始註冊", false);
+
+      } catch (err) {
+        setMsg("LINE 初始化失敗：" + (err && err.message ? err.message : err), true);
+      }
+    }
+
+    async function send() {
+      var data = {
+        action: "saveMember",
+        name: document.getElementById('name').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        type: document.getElementById('type').value,
+        company: document.getElementById('company').value.trim(),
+        need: document.getElementById('need').value,
+        birthday: document.getElementById('birthday').value,
+        userId: userId,
+        lineName: lineName
+      };
+
+      if (!data.name || !data.phone) {
+        setMsg("姓名與手機必填", true);
+        return;
+      }
+
+      if (!ready) {
+        setMsg("LINE 尚未初始化完成", true);
+        return;
+      }
+
+      setMsg("送出註冊中...", true);
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        setMsg(result.message, !result.ok);
+
+        if (result.cardNo) {
+          document.getElementById('card').style.display = 'block';
+          document.getElementById('card').innerHTML =
+            '<h2>生暉食品電子會員卡</h2>' +
+            '<div class="cardno">' + result.cardNo + '</div>' +
+            '<img src="https://barcode.tec-it.com/barcode.ashx?data=' +
+            encodeURIComponent(result.cardNo) +
+            '&code=Code128&dpi=96">' +
+            '<div>結帳時請出示此條碼</div>';
+        }
+
+      } catch (err) {
+        setMsg("錯誤：" + (err && err.message ? err.message : err), true);
+      }
+    }
+
+    window.onload = initLIFF;
+  </script>
+
+</body>
+</html>
