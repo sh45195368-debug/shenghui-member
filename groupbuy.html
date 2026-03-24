@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生暉食品營運｜團購專區 V1</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", Arial, sans-serif;
+      background: #f6f7f9;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+    .topbar {
+      background: #1f3b2d;
+      color: #fff;
+      font-size: 14px;
+    }
+    .topbar .wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      flex-wrap: wrap;
+    }
+    .hero {
+      background: linear-gradient(135deg, #244736 0%, #3f6a54 100%);
+      color: white;
+      padding: 42px 0 28px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: 34px;
+      line-height: 1.25;
+    }
+    .hero p {
+      margin: 0 0 18px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.92);
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: #f6c453;
+      color: #1f2937;
+    }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.35);
+    }
+    .notice-box {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 18px;
+      padding: 20px;
+      backdrop-filter: blur(6px);
+    }
+    .notice-box h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+    .notice-box ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.92);
+    }
+    .strip {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .strip .wrap {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      padding: 16px;
+    }
+    .strip-item {
+      background: #fafafa;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+    .strip-item strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+      color: #111827;
+    }
+    .section {
+      padding: 34px 0;
+    }
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .section-title h2 {
+      margin: 0;
+      font-size: 28px;
+      color: #111827;
+    }
+    .section-title p {
+      margin: 6px 0 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+    }
+    .card-img {
+      height: 210px;
+      background: linear-gradient(135deg, #dbe4da, #f2f5f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #47614f;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .card-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef4ef;
+      color: #2f5b40;
+      font-weight: 700;
+    }
+    .tag-hot {
+      background: #fff1f2;
+      color: #c81e1e;
+    }
+    .card h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.4;
+      color: #111827;
+      min-height: 50px;
+    }
+    .desc {
+      margin: 0;
+      font-size: 14px;
+      color: #6b7280;
+      min-height: 44px;
+    }
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .price {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1f3b2d;
+    }
+    .old-price {
+      color: #9ca3af;
+      text-decoration: line-through;
+      font-size: 14px;
+    }
+    .stock {
+      font-size: 13px;
+      color: #b45309;
+      font-weight: 700;
+    }
+    .card .btn {
+      width: 100%;
+      margin-top: auto;
+    }
+    .order-box {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+    }
+    .order-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .order-step {
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 18px;
+      background: #fafafa;
+    }
+    .order-step span {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      text-align: center;
+      border-radius: 50%;
+      background: #1f3b2d;
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .order-step h4 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+    .order-step p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .cta-box {
+      margin-top: 18px;
+      background: #1f3b2d;
+      color: #fff;
+      border-radius: 18px;
+      padding: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .faq {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .faq-item {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .faq-item h4 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+    .faq-item p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .footer {
+      background: #111827;
+      color: rgba(255,255,255,0.9);
+      padding: 30px 0;
+      margin-top: 26px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .footer h4 {
+      margin: 0 0 10px;
+      color: #fff;
+    }
+    .footer p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+    .small {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+    @media (max-width: 980px) {
+      .hero-grid,
+      .product-grid,
+      .strip .wrap,
+      .order-grid,
+      .faq,
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      h1 { font-size: 28px; }
+      .hero-grid,
+      .product-grid,
+      .strip .wrap,
+      .order-grid,
+      .faq,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .card h3,
+      .desc { min-height: auto; }
+      .card-img { height: 190px; }
+      .section { padding: 28px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <div>生暉食品營運｜每週精選團購專區</div>
+      <div>LINE ID：gogo-food.com</div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="badge">本週團購主題｜冷凍 / 烘焙 / 熱銷補貨</div>
+        <h1>生暉團購頁 V1<br>精選限量、門市自取更划算</h1>
+        <p>
+          每週固定上架熱銷商品與限量優惠，價格清楚、截止時間清楚、取貨方式清楚。<br>
+          適合熟客補貨、家庭囤貨、餐飲小量採購。
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#products">立即選購本週商品</a>
+          <a class="btn btn-outline" href="#order-info">查看下單與取貨方式</a>
+        </div>
+      </div>
+
+      <div class="notice-box">
+        <h3>本週團購資訊</h3>
+        <ul>
+          <li>團購截止：2026/03/29（日）晚上 23:59</li>
+          <li>取貨時間：2026/03/31（二）起依通知取貨</li>
+          <li>取貨地點：台中市西屯區福順路10號</li>
+          <li>部分商品數量有限，售完提前結束</li>
+          <li>如需大量採購，請直接加 LINE 詢價</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="strip">
+    <div class="wrap">
+      <div class="strip-item">
+        <strong>每週精選上架</strong>
+        <div class="small">固定更新，快速補貨</div>
+      </div>
+      <div class="strip-item">
+        <strong>價格公開透明</strong>
+        <div class="small">原價 / 團購價清楚標示</div>
+      </div>
+      <div class="strip-item">
+        <strong>門市自取方便</strong>
+        <div class="small">順路取貨，省時省運費</div>
+      </div>
+      <div class="strip-item">
+        <strong>LINE客服支援</strong>
+        <div class="small">問題可直接私訊詢問</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="products">
+    <div class="wrap">
+      <div class="section-title">
+        <div>
+          <h2>本週團購商品</h2>
+          <p>下面是示範版商品卡，你之後只要換圖片、品名、價格、數量即可直接上架。</p>
+        </div>
+      </div>
+
+      <div class="product-grid">
+        <div class="card">
+          <div class="card-img">商品圖片區 01</div>
+          <div class="card-body">
+            <div class="tag-row">
+              <span class="tag">門市自取</span>
+              <span class="tag tag-hot">限量 20 組</span>
+            </div>
+            <h3>冷凍酥皮起酥片組</h3>
+            <p class="desc">早餐店、烘焙店、家庭囤貨都適合，熱門補貨款。</p>
+            <div class="price-row">
+              <div class="price">$199</div>
+              <div class="old-price">原價 $235</div>
+            </div>
+            <div class="stock">🔥 剩餘數量有限</div>
+            <a class="btn btn-primary" href="#order-info">我要登記</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-img">商品圖片區 02</div>
+          <div class="card-body">
+            <div class="tag-row">
+              <span class="tag">家庭必備</span>
+              <span class="tag tag-hot">本週熱銷</span>
+            </div>
+            <h3>焗烤起司絲優惠組</h3>
+            <p class="desc">焗烤、披薩、義大利麵常用款，回購率高。</p>
+            <div class="price-row">
+              <div class="price">$289</div>
+              <div class="old-price">原價 $329</div>
+            </div>
+            <div class="stock">🔥 團購優惠至截止日</div>
+            <a class="btn btn-primary" href="#order-info">我要登記</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-img">商品圖片區 03</div>
+          <div class="card-body">
+            <div class="tag-row">
+              <span class="tag">餐飲補貨</span>
+              <span class="tag tag-hot">限時特價</span>
+            </div>
+            <h3>炸物粉 / 醃料組合包</h3>
+            <p class="desc">適合小吃店、餐飲業者、小量測試新品使用。</p>
+            <div class="price-row">
+              <div class="price">$350</div>
+              <div class="old-price">原價 $420</div>
+            </div>
+            <div class="stock">🔥 限量 15 組</div>
+            <a class="btn btn-primary" href="#order-info">我要登記</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-img">商品圖片區 04</div>
+          <div class="card-body">
+            <div class="tag-row">
+              <span class="tag">烘焙熱銷</span>
+              <span class="tag tag-hot">組合價</span>
+            </div>
+            <h3>手作烘焙材料入門包</h3>
+            <p class="desc">適合家庭烘焙、教室課程、入門嘗試使用。</p>
+            <div class="price-row">
+              <div class="price">$499</div>
+              <div class="old-price">原價 $580</div>
+            </div>
+            <div class="stock">🔥 先登記先保留</div>
+            <a class="btn btn-primary" href="#order-info">我要登記</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="order-info">
+    <div class="wrap">
+      <div class="section-title">
+        <div>
+          <h2>下單與取貨方式</h2>
+          <p>這一塊是整個團購頁最重要的地方，務必要寫得清楚，避免後續客服混亂。</p>
+        </div>
+      </div>
+
+      <div class="order-box">
+        <div class="order-grid">
+          <div class="order-step">
+            <span>1</span>
+            <h4>挑選商品</h4>
+            <p>瀏覽本週團購商品，確認品項、數量與價格，限量商品售完即止。</p>
+          </div>
+          <div class="order-step">
+            <span>2</span>
+            <h4>填寫登記</h4>
+            <p>可串接 Google 表單、LINE表單或你自己的下單頁，收集姓名、電話、商品、數量。</p>
+          </div>
+          <div class="order-step">
+            <span>3</span>
+            <h4>等候通知</h4>
+            <p>整理訂單後，以 LINE 或電話通知到貨 / 可取貨時間。</p>
+          </div>
+          <div class="order-step">
+            <span>4</span>
+            <h4>門市自取 / 大量詢價</h4>
+            <p>一般客人以門市自取為主；如需大量採購、外送或長期合作，可直接聯絡客服。</p>
+          </div>
+        </div>
+
+        <div class="cta-box">
+          <div>
+            <h3 style="margin:0 0 6px;">立即加入本週團購</h3>
+            <div class="small" style="color:rgba(255,255,255,0.8);">
+              你可以把下面兩個連結改成：Google 表單 / LINE 官方帳號 / 自建下單頁
+            </div>
+          </div>
+          <div class="hero-actions" style="margin-top:0;">
+            <a class="btn btn-primary" href="https://forms.gle/your-form-link" target="_blank">填寫團購登記表</a>
+            <a class="btn btn-outline" href="https://line.me/R/ti/p/@gogo-food.com" target="_blank">加入 LINE 詢問</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-title">
+        <div>
+          <h2>常見問題</h2>
+          <p>先把常見問題寫在頁面上，可以減少大量重複客服訊息。</p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="faq-item">
+          <h4>Q1：團購商品可以直接到店裡看嗎？</h4>
+          <p>部分商品現場有陳列，部分為團購專案或限量活動，建議先於 LINE 詢問確認。</p>
+        </div>
+        <div class="faq-item">
+          <h4>Q2：可以幫我保留商品嗎？</h4>
+          <p>填單完成後，將依登記順序安排；限量商品以實際確認通知為準。</p>
+        </div>
+        <div class="faq-item">
+          <h4>Q3：有外送或大量配送嗎？</h4>
+          <p>大量採購、固定補貨、商業客戶合作，請直接加 LINE 聯繫，我們再依地區與金額評估。</p>
+        </div>
+        <div class="faq-item">
+          <h4>Q4：付款方式怎麼處理？</h4>
+          <p>可依你的實際流程改成：門市付款、先匯款、LINE Pay、取貨付款等。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap footer-grid">
+      <div>
+        <h4>生暉食品營運</h4>
+        <p>地址：台中市西屯區福順路10號</p>
+        <p>營業時間：週一至週五 8:30–19:30｜週六日及國定假日 9:00–19:00</p>
+        <p>LINE ID：gogo-food.com</p>
+      </div>
+      <div>
+        <h4>頁面說明</h4>
+        <p>本頁為團購頁 V1 示範版，可直接改商品、價格、圖片與連結後上線。</p>
+        <p class="small">建議下一版可再加：商品圖片真實化、倒數計時、分類篩選、購物車、CSV 串接。</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
