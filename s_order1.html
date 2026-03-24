@@ -386,7 +386,7 @@ function parseCSV(text) {
           oldPrice: Number(r['原價'] || 0),
           price: Number(r['特價'] || 0),
           tag1: r['標籤1'] || '',
-          tag2: r['標籤2'] || '',
+          tag2: r['效期'] || '',
           desc: r['商品說明'] || ''
         }));
     }
@@ -407,7 +407,7 @@ function parseCSV(text) {
 
       productList.innerHTML = products.map((p) => {
         const save = Math.max(0, p.oldPrice - p.price);
-        const tags = [p.tag1, p.tag2].filter(Boolean).map(tag => `
+        const tags = [p.tag1, p.tag2 ? `⚠️ 效期：${p.tag2}` : ''] .filter(Boolean).map(tag => `
           <span class="tag ${getTagClass(tag)}">${escapeHtml(tag)}</span>
         `).join('');
 
