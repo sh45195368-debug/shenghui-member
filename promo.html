@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生暉食品營運｜優惠活動</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", Arial, sans-serif;
+      background: linear-gradient(180deg, #f5f6f8 0%, #eef2f5 100%);
+      color: #1f2937;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 18px;
+    }
+
+    .topbar {
+      background: #1f3b2d;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .topbar .wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+      flex-wrap: wrap;
+    }
+
+    .hero {
+      padding: 42px 0 24px;
+    }
+
+    .hero-box {
+      background: linear-gradient(135deg, #244736 0%, #3f6a54 100%);
+      border-radius: 28px;
+      padding: 34px 28px;
+      color: #fff;
+      box-shadow: 0 18px 40px rgba(31, 59, 45, 0.18);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.15);
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.25;
+    }
+
+    .hero-box p {
+      margin: 0;
+      font-size: 16px;
+      color: rgba(255,255,255,0.92);
+      line-height: 1.75;
+    }
+
+    .section {
+      padding: 8px 0 42px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-top: 20px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.05);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      min-height: 100%;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 34px rgba(0,0,0,0.08);
+    }
+
+    .icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      margin-bottom: 18px;
+    }
+
+    .icon-sale { background: #fff4e8; }
+    .icon-clearance { background: #eef9ef; }
+    .icon-group { background: #eef4ff; }
+
+    .tag {
+      display: inline-block;
+      width: fit-content;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .tag-sale { background: #fff1f2; color: #be123c; }
+    .tag-clearance { background: #ecfdf5; color: #047857; }
+    .tag-group { background: #eff6ff; color: #1d4ed8; }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      color: #111827;
+    }
+
+    .card p {
+      margin: 0 0 18px;
+      color: #6b7280;
+      font-size: 15px;
+      line-height: 1.75;
+      flex: 1;
+    }
+
+    .features {
+      margin: 0 0 18px;
+      padding-left: 18px;
+      color: #4b5563;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 14px;
+      font-weight: 700;
+      border: none;
+      width: 100%;
+    }
+
+    .btn-sale { background: #f97316; color: #fff; }
+    .btn-clearance { background: #16a34a; color: #fff; }
+    .btn-group { background: #2563eb; color: #fff; }
+
+    .note {
+      margin-top: 26px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 20px 22px;
+      color: #4b5563;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .footer {
+      padding: 0 0 36px;
+    }
+
+    .footer-box {
+      background: #111827;
+      border-radius: 22px;
+      color: rgba(255,255,255,0.9);
+      padding: 24px;
+    }
+
+    .footer-box h3 {
+      margin: 0 0 10px;
+      color: #fff;
+      font-size: 20px;
+    }
+
+    .footer-box p {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .hero-box {
+        padding: 28px 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <div>生暉食品營運｜優惠活動入口</div>
+      <div>LINE ID：gogo-food.com</div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-box">
+        <div class="badge">優惠活動總入口</div>
+        <h1>想看哪一種優惠？</h1>
+        <p>
+          這一頁就是給 LINE 圖文選單「優惠活動」按鈕使用的入口頁。<br>
+          客人進來之後，可以自行選擇查看特價活動、即期出清或團購商品。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="cards">
+
+        <a class="card" href="https://your-domain.com/sale.html" target="_blank">
+          <div class="icon icon-sale">🏷️</div>
+          <div class="tag tag-sale">熱銷優惠</div>
+          <h2>特價活動</h2>
+          <p>
+            集中展示目前特價中的重點商品，適合快速導流、促進成交與主推熱銷品。
+          </p>
+          <ul class="features">
+            <li>當期促銷商品集中展示</li>
+            <li>適合搭配 LINE 推播導流</li>
+            <li>主打熱銷與話題商品</li>
+          </ul>
+          <div class="btn btn-sale">進入特價活動</div>
+        </a>
+
+        <a class="card" href="https://your-domain.com/clearance.html" target="_blank">
+          <div class="icon icon-clearance">📦</div>
+          <div class="tag tag-clearance">限量出清</div>
+          <h2>即期出清</h2>
+          <p>
+            適合放即期品、短效期商品、限量清庫存商品，讓客人快速看到便宜好物。
+          </p>
+          <ul class="features">
+            <li>即期與短效期商品專區</li>
+            <li>適合快速出清與清庫存</li>
+            <li>可搭配限量與截止日期</li>
+          </ul>
+          <div class="btn btn-clearance">進入即期出清</div>
+        </a>
+
+        <a class="card" href="https://your-domain.com/groupbuy.html" target="_blank">
+          <div class="icon icon-group">🛒</div>
+          <div class="tag tag-group">每週精選</div>
+          <h2>團購商品</h2>
+          <p>
+            放每週團購、組合包、限定優惠商品，適合集中做活動、收單與導流成交。
+          </p>
+          <ul class="features">
+            <li>每週團購活動入口</li>
+            <li>適合組合包與限量活動</li>
+            <li>可直接串表單或下單頁</li>
+          </ul>
+          <div class="btn btn-group">進入團購商品</div>
+        </a>
+
+      </div>
+
+      <div class="note">
+        <strong>使用方式：</strong><br>
+        把 LINE Rich Menu 的「優惠活動」按鈕，直接連到這一頁。<br>
+        然後把上面三個連結改成你自己的網址：
+        <br><br>
+        1. `https://your-domain.com/sale.html` → 改成你的「特價活動」頁面<br>
+        2. `https://your-domain.com/clearance.html` → 改成你的「即期出清」頁面<br>
+        3. `https://your-domain.com/groupbuy.html` → 改成你的「團購商品」頁面
+      </div>
+    </div>
+  </section>
+
+  <section class="footer">
+    <div class="wrap">
+      <div class="footer-box">
+        <h3>生暉食品營運</h3>
+        <p>地址：台中市西屯區福順路10號</p>
+        <p>營業時間：週一至週五 8:30–19:30｜週六日及國定假日 9:00–19:00</p>
+        <p>LINE ID：gogo-food.com</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
