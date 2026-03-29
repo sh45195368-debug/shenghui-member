@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>生暉會員系統(測試中未上線)</title>
+  <title>生暉會員系統</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
@@ -55,14 +55,37 @@
       font-size: 16px;
       white-space: pre-line;
     }
+/* ===== Logo + 標題 ===== */
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.title-row h2 {
+  margin: 0;            /* 讓它跟logo垂直置中 */
+  font-size: 22px;      /* 微調更像App */
+  font-weight: 700;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+ 
     .ok { color: #0a7a2f; }
     .err { color: #c62828; }
   </style>
 </head>
 <body>
   <div class="box">
-    <h2>生暉會員系統(測試中)</h2>
-
+  <div class="title-row">
+  <img src="logo.png" class="logo">
+  <h2>生暉會員系統</h2>
+</div>
    <input id="card" placeholder="輸入會員卡號" value="SH168">
     <input id="phone" placeholder="手機號碼">
 
