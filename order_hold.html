@@ -146,11 +146,32 @@
         <div class="three">
           <div>
             <label for="quantity">數量</label>
-            <input id="quantity" type="text" placeholder="例如：1 / 5 / 10" />
+            <select id="quantity">
+              <option value="">請選擇</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
           </div>
           <div>
             <label for="unit">單位</label>
-            <input id="unit" type="text" placeholder="例如：箱 / 包 / 個" />
+            <select id="unit">
+              <option value="">請選擇</option>
+              <option value="箱">箱</option>
+              <option value="包">包</option>
+              <option value="個">個</option>
+              <option value="組">組</option>
+              <option value="袋">袋</option>
+              <option value="條">條</option>
+              <option value="瓶">瓶</option>
+              <option value="罐">罐</option>
+            </select>
           </div>
           <div>
             <label for="pickupMethod">取貨方式</label>
@@ -165,7 +186,15 @@
         <div class="two">
           <div>
             <label for="targetDate">日期</label>
-            <input id="targetDate" type="text" placeholder="例如：3/31 下午 / 4/2" />
+            <select id="targetDate">
+              <option value="">請選擇</option>
+              <option value="今天">今天</option>
+              <option value="明天">明天</option>
+              <option value="後天">後天</option>
+              <option value="本週內">本週內</option>
+              <option value="下週">下週</option>
+              <option value="可先報價">可先報價</option>
+            </select>
           </div>
           <div>
             <label for="note">備註</label>
