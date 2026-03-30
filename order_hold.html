@@ -97,6 +97,7 @@
     .btn-generate{ background:var(--btn); color:#fff; }
     .btn-copy{ background:var(--btn2); color:#fff; }
     .btn-line{ background:var(--line); color:#fff; }
+
     .output{
       margin-top:18px;
     }
@@ -104,12 +105,39 @@
       min-height:220px;
       background:#fcfcfc;
     }
+
+    .qty-box{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .qty-btn{
+      width:44px;
+      min-width:44px;
+      height:44px;
+      border:none;
+      border-radius:10px;
+      background:#222;
+      color:#fff;
+      font-size:22px;
+      font-weight:700;
+      padding:0;
+      line-height:1;
+      cursor:pointer;
+    }
+    .qty-input{
+      text-align:center;
+      padding:12px 8px;
+      font-weight:700;
+    }
+
     .footer-note{
       margin-top:14px;
       color:var(--muted);
       font-size:13px;
       line-height:1.6;
     }
+
     @media (max-width:520px){
       .two,.three{grid-template-columns:1fr}
       h1{font-size:24px}
@@ -146,19 +174,13 @@
         <div class="three">
           <div>
             <label for="quantity">數量</label>
-            <select id="quantity">
-              <option value="">請選擇</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="30">30</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
+            <div class="qty-box">
+              <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
+              <input id="quantity" class="qty-input" type="number" min="1" step="1" value="1" />
+              <button type="button" class="qty-btn" onclick="changeQty(1)">＋</button>
+            </div>
           </div>
+
           <div>
             <label for="unit">單位</label>
             <select id="unit">
@@ -168,11 +190,11 @@
               <option value="個">個</option>
               <option value="組">組</option>
               <option value="袋">袋</option>
-              <option value="條">條</option>
               <option value="瓶">瓶</option>
               <option value="罐">罐</option>
             </select>
           </div>
+
           <div>
             <label for="pickupMethod">取貨方式</label>
             <select id="pickupMethod">
@@ -186,15 +208,7 @@
         <div class="two">
           <div>
             <label for="targetDate">日期</label>
-            <select id="targetDate">
-              <option value="">請選擇</option>
-              <option value="今天">今天</option>
-              <option value="明天">明天</option>
-              <option value="後天">後天</option>
-              <option value="本週內">本週內</option>
-              <option value="下週">下週</option>
-              <option value="可先報價">可先報價</option>
-            </select>
+            <input id="targetDate" type="date" />
           </div>
           <div>
             <label for="note">備註</label>
@@ -234,6 +248,22 @@
       return v ? `${label}：${v}` : '';
     }
 
+    function formatDate(dateStr){
+      if(!dateStr) return '';
+      const [y, m, d] = dateStr.split('-');
+      if(!y || !m || !d) return dateStr;
+      return `${y}/${m}/${d}`;
+    }
+
+    function changeQty(diff){
+      const qtyInput = document.getElementById('quantity');
+      let current = parseInt(qtyInput.value || '1', 10);
+      if (isNaN(current) || current < 1) current = 1;
+      current += diff;
+      if (current < 1) current = 1;
+      qtyInput.value = current;
+    }
+
     function generateText(){
       const requestType = document.getElementById('requestType').value;
       const productName = document.getElementById('productName').value;
@@ -241,7 +271,7 @@
       const quantity = document.getElementById('quantity').value;
       const unit = document.getElementById('unit').value;
       const pickupMethod = document.getElementById('pickupMethod').value;
-      const targetDate = document.getElementById('targetDate').value;
+      const targetDate = formatDate(document.getElementById('targetDate').value);
       const note = document.getElementById('note').value;
 
       if (!clean(productName)) {
