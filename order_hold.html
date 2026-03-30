@@ -1,450 +1,76 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
+from pathlib import Path
+
+html = """<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>生暉食品｜客訂／留貨填寫</title>
-  <style>
-    :root {
-      --bg: #f5f5f5;
-      --card: #ffffff;
-      --text: #222222;
-      --muted: #666666;
-      --border: #e5e5e5;
-      --primary: #111111;
-      --primary-hover: #2b2b2b;
-      --secondary: #f0f0f0;
-      --success: #1f7a1f;
-      --danger: #b42318;
-      --radius: 14px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, "Noto Sans TC", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: 20px;
-    }
-
-    .wrap {
-      max-width: 720px;
-      margin: 0 auto;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: 0 6px 22px rgba(0,0,0,0.08);
-      border: 1px solid rgba(0,0,0,0.04);
-    }
-
-    h1 {
-      margin: 0 0 10px;
-      font-size: 28px;
-      line-height: 1.25;
-    }
-
-    .subtitle {
-      margin: 0 0 18px;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 15px;
-    }
-
-    .note {
-      background: #fafafa;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 18px;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    label {
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      border: 1px solid #d6d6d6;
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 16px;
-      background: #fff;
-    }
-
-    textarea {
-      min-height: 320px;
-      resize: vertical;
-      line-height: 1.6;
-    }
-
-    .section-title {
-      margin: 8px 0 12px;
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    button, .btn {
-      border: none;
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover { background: var(--primary-hover); }
-
-    .btn-secondary {
-      background: var(--secondary);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-line {
-      background: #06c755;
-      color: #fff;
-    }
-
-    .status {
-      margin-top: 14px;
-      font-size: 14px;
-      line-height: 1.6;
-      min-height: 22px;
-    }
-
-    .status.success { color: var(--success); }
-    .status.error { color: var(--danger); }
-
-    .footnote {
-      margin-top: 18px;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    @media (max-width: 640px) {
-      body { padding: 12px; }
-      .card { padding: 16px; }
-      .grid { grid-template-columns: 1fr; }
-      .actions { grid-template-columns: 1fr; }
-      h1 { font-size: 24px; }
-      textarea { min-height: 280px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生暉｜客訂／留貨填寫</title>
+<style>
+body { font-family: Arial; padding:20px; background:#f5f5f5; }
+.container { max-width:500px; margin:auto; background:#fff; padding:20px; border-radius:10px; }
+textarea { width:100%; height:220px; margin-top:10px; }
+button { width:100%; padding:12px; margin-top:10px; border:none; border-radius:8px; font-size:16px; }
+.copy { background:#333; color:#fff; }
+.line { background:#06C755; color:#fff; }
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>生暉食品｜客訂／留貨填寫</h1>
-      <p class="subtitle">
-        若您需要訂貨、留貨、客訂或預購，請填寫以下資訊。<br>
-        系統會自動整理成標準文字，方便您直接傳回 LINE，由門市更快為您確認。
-      </p>
+<div class="container">
 
-      <div class="note">
-        填寫完成後，請按「產生標準文字」→「一鍵傳LINE」即可。<br>
-        ※ 實際價格、庫存與交期，仍以門市確認為準。
-      </div>
+<h2>客訂／留貨需求</h2>
+<p>請填寫內容後，直接傳送到LINE</p>
 
-      <div class="section-title">基本資料</div>
-      <div class="grid">
-        <div class="field">
-          <label for="customerName">客戶姓名</label>
-          <input id="customerName" type="text" placeholder="請輸入姓名" />
-        </div>
-        <div class="field">
-          <label for="customerPhone">聯絡電話</label>
-          <input id="customerPhone" type="text" placeholder="請輸入電話" />
-        </div>
-        <div class="field full">
-          <label for="requestType">需求類型</label>
-          <select id="requestType">
-            <option value="">請選擇</option>
-            <option value="訂貨">訂貨</option>
-            <option value="留貨">留貨</option>
-            <option value="客訂">客訂</option>
-            <option value="預購">預購</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="section-title">商品需求</div>
-      <div class="grid">
-        <div class="field full">
-          <label for="product1Name">商品名稱 1</label>
-          <input id="product1Name" type="text" placeholder="例如：PP-D51K便當盒" />
-        </div>
-        <div class="field">
-          <label for="product1Spec">規格 1</label>
-          <input id="product1Spec" type="text" placeholder="例如：含蓋 / 1000ml / 50入" />
-        </div>
-        <div class="field">
-          <label for="product1Qty">數量 1</label>
-          <input id="product1Qty" type="text" placeholder="例如：1" />
-        </div>
-        <div class="field full">
-          <label for="product1Unit">單位 1</label>
-          <input id="product1Unit" type="text" placeholder="例如：箱 / 包 / 個 / 瓶" />
-        </div>
-
-        <div class="field full">
-          <label for="product2Name">商品名稱 2（可不填）</label>
-          <input id="product2Name" type="text" placeholder="第二項商品" />
-        </div>
-        <div class="field">
-          <label for="product2Spec">規格 2</label>
-          <input id="product2Spec" type="text" placeholder="第二項商品規格" />
-        </div>
-        <div class="field">
-          <label for="product2Qty">數量 2</label>
-          <input id="product2Qty" type="text" placeholder="例如：2" />
-        </div>
-        <div class="field full">
-          <label for="product2Unit">單位 2</label>
-          <input id="product2Unit" type="text" placeholder="例如：箱 / 包 / 個 / 瓶" />
-        </div>
-      </div>
-
-      <div class="section-title">交付需求</div>
-      <div class="grid">
-        <div class="field">
-          <label for="pickupMethod">取貨方式</label>
-          <select id="pickupMethod">
-            <option value="">請選擇</option>
-            <option value="門市自取">門市自取</option>
-            <option value="外送">外送</option>
-            <option value="其他">其他</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="targetDate">希望日期</label>
-          <input id="targetDate" type="date" />
-        </div>
-        <div class="field full">
-          <label for="targetTime">希望時段</label>
-          <input id="targetTime" type="text" placeholder="例如：上午 / 下午 / 17:00後" />
-        </div>
-        <div class="field full">
-          <label for="note">備註</label>
-          <input id="note" type="text" placeholder="例如：麻煩先協助保留 / 若缺貨請先通知" />
-        </div>
-      </div>
-
-      <div class="section-title">標準文字</div>
-      <div class="field full">
-        <label for="outputText">可直接修改後傳回 LINE</label>
-        <textarea id="outputText">【生暉｜客訂／留貨需求】
+<textarea id="orderText">
+【生暉｜客訂／留貨需求】
 
 客戶姓名：
 聯絡電話：
 需求類型：
 
-商品1：
-規格1：
-數量1：
-單位1：
+商品名稱：
+規格：
+數量：
+單位：
 
 取貨方式：
-希望日期：
-希望時段：
+取貨日期：
+
 備註：
 
-※實際價格、庫存與交期仍以門市確認為準</textarea>
-      </div>
+※實際價格與交期以門市確認為準
+</textarea>
 
-      <div class="actions">
-        <button class="btn-secondary" id="generateBtn">產生標準文字</button>
-        <button class="btn-primary" id="copyBtn">複製內容</button>
-        <button class="btn-line" id="lineBtn">一鍵傳 LINE</button>
-      </div>
+<button class="copy" onclick="copyText()">複製內容</button>
+<button class="line" onclick="sendToLine()">一鍵傳LINE</button>
 
-      <div id="status" class="status"></div>
+</div>
 
-      <div class="footnote">
-        建議您送出前再確認一次商品名稱、規格、數量與日期，讓門市更快為您確認處理。
-      </div>
-    </div>
-  </div>
+<script>
+function copyText(){
+  const text = document.getElementById('orderText').value;
+  navigator.clipboard.writeText(text);
+  alert("已複製內容");
+}
 
-  <script>
-    const $ = (id) => document.getElementById(id);
+function sendToLine(){
+  const text = document.getElementById('orderText').value.trim();
+  if(!text){
+    alert("請先填寫內容");
+    return;
+  }
+  const encoded = encodeURIComponent(text);
+  const url = "https://line.me/R/oaMessage/%40gogo-food/?" + encoded;
+  window.location.href = url;
+}
+</script>
 
-    function val(id) {
-      return ($(id).value || '').trim();
-    }
-
-    function formatLine(label, value) {
-      return value ? `${label}：${value}` : '';
-    }
-
-    function combineQty(qty, unit) {
-      if (!qty && !unit) return '';
-      return `${qty || ''}${unit || ''}`.trim();
-    }
-
-    function buildText() {
-      const customerName = val('customerName');
-      const customerPhone = val('customerPhone');
-      const requestType = val('requestType');
-
-      const product1Name = val('product1Name');
-      const product1Spec = val('product1Spec');
-      const product1Qty = val('product1Qty');
-      const product1Unit = val('product1Unit');
-
-      const product2Name = val('product2Name');
-      const product2Spec = val('product2Spec');
-      const product2Qty = val('product2Qty');
-      const product2Unit = val('product2Unit');
-
-      const pickupMethod = val('pickupMethod');
-      const targetDate = val('targetDate');
-      const targetTime = val('targetTime');
-      const note = val('note');
-
-      const requiredMissing = [];
-      if (!customerName) requiredMissing.push('客戶姓名');
-      if (!customerPhone) requiredMissing.push('聯絡電話');
-      if (!requestType) requiredMissing.push('需求類型');
-      if (!product1Name) requiredMissing.push('商品名稱 1');
-      if (!product1Qty) requiredMissing.push('數量 1');
-      if (!pickupMethod) requiredMissing.push('取貨方式');
-
-      if (requiredMissing.length > 0) {
-        return {
-          ok: false,
-          message: `請先填寫：${requiredMissing.join('、')}`,
-          text: ''
-        };
-      }
-
-      const lines = [
-        '【生暉｜客訂／留貨需求】',
-        '',
-        formatLine('客戶姓名', customerName),
-        formatLine('聯絡電話', customerPhone),
-        formatLine('需求類型', requestType),
-        '',
-        formatLine('商品1', product1Name),
-        formatLine('規格1', product1Spec),
-        formatLine('數量1', combineQty(product1Qty, product1Unit)),
-      ].filter(Boolean);
-
-      if (product2Name || product2Spec || product2Qty || product2Unit) {
-        lines.push('');
-        if (product2Name) lines.push(formatLine('商品2', product2Name));
-        if (product2Spec) lines.push(formatLine('規格2', product2Spec));
-        const product2QtyText = combineQty(product2Qty, product2Unit);
-        if (product2QtyText) lines.push(formatLine('數量2', product2QtyText));
-      }
-
-      lines.push('');
-      lines.push(formatLine('取貨方式', pickupMethod));
-      if (targetDate) lines.push(formatLine('希望日期', targetDate.replace(/-/g, '/')));
-      if (targetTime) lines.push(formatLine('希望時段', targetTime));
-      if (note) lines.push(formatLine('備註', note));
-      lines.push('');
-      lines.push('※實際價格、庫存與交期仍以門市確認為準');
-
-      return {
-        ok: true,
-        message: '已產生標準文字',
-        text: lines.join('\n')
-      };
-    }
-
-    function setStatus(message, type = '') {
-      const el = $('status');
-      el.textContent = message || '';
-      el.className = `status ${type}`.trim();
-    }
-
-    $('generateBtn').addEventListener('click', () => {
-      const result = buildText();
-      if (!result.ok) {
-        setStatus(result.message, 'error');
-        return;
-      }
-      $('outputText').value = result.text;
-      setStatus(result.message, 'success');
-    });
-
-    $('copyBtn').addEventListener('click', async () => {
-      const result = buildText();
-      if (!result.ok) {
-        setStatus(result.message, 'error');
-        return;
-      }
-      $('outputText').value = result.text;
-      try {
-        await navigator.clipboard.writeText(result.text);
-        setStatus('已複製內容，可直接貼回 LINE 傳送', 'success');
-      } catch (e) {
-        setStatus('複製失敗，請手動長按文字框複製', 'error');
-      }
-    });
-
-    $('lineBtn').addEventListener('click', async () => {
-      const result = buildText();
-      if (!result.ok) {
-        setStatus(result.message, 'error');
-        return;
-      }
-      $('outputText').value = result.text;
-
-      try {
-        await navigator.clipboard.writeText(result.text);
-      } catch (e) {
-        // Ignore clipboard failure and continue to LINE share.
-      }
-
-      const text = encodeURIComponent(result.text);
-      const lineUrl = `https://line.me/R/msg/text/?${text}`;
-      setStatus('即將開啟 LINE，請確認後送出', 'success');
-      window.location.href = lineUrl;
-    });
-  </script>
 </body>
 </html>
+"""
+
+file_path = "/mnt/data/line-order-hold-v1-final.html"
+Path(file_path).write_text(html, encoding='utf-8')
+
+file_path
