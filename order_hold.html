@@ -217,10 +217,10 @@
           </select>
         </div>
 
-       <div class="field">
-  <label for="pickupDate">希望日期</label>
-  <input type="date" id="pickupDate" onchange="updateSummary()" />
-</div>
+        <div class="field">
+          <label for="pickupDate">希望日期</label>
+          <input type="text" id="pickupDate" placeholder="例如：4/2 或 今天下午" oninput="updateSummary()" />
+        </div>
 
         <div class="field">
           <label for="pickupTime">希望時段</label>
@@ -311,17 +311,7 @@
     function value(id) {
       return document.getElementById(id).value.trim();
     }
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (isNaN(d)) return dateStr;
 
-  const y = d.getFullYear();
-  const m = d.getMonth() + 1;
-  const day = d.getDate();
-
-  return `${y}/${m}/${day}`;
-}
     function productLine(name, spec, qty, unit, index) {
       if (!name && !spec && !qty && !unit) return '';
       let text = `商品${index}：${name || '未填'}\n`;
@@ -335,7 +325,7 @@ function formatDate(dateStr) {
       const customerName = value('customerName');
       const customerPhone = value('customerPhone');
       const pickupMethod = value('pickupMethod');
-      const pickupDate = formatDate(value('pickupDate'));
+      const pickupDate = value('pickupDate');
       const pickupTime = value('pickupTime');
       const note = value('customerNote');
 
