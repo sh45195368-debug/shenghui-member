@@ -311,7 +311,17 @@
     function value(id) {
       return document.getElementById(id).value.trim();
     }
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
 
+  const y = d.getFullYear();
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+
+  return `${y}/${m}/${day}`;
+}
     function productLine(name, spec, qty, unit, index) {
       if (!name && !spec && !qty && !unit) return '';
       let text = `商品${index}：${name || '未填'}\n`;
