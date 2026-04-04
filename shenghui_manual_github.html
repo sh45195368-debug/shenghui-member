@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生暉食品營運｜智能助手使用手冊</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --accent:#2563eb;
+      --accent-soft:#eff6ff;
+      --good:#065f46;
+      --warn:#92400e;
+      --bad:#991b1b;
+      --shadow:0 10px 30px rgba(15,23,42,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.7;
+    }
+    .wrap{
+      max-width:1180px;
+      margin:0 auto;
+      padding:24px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#1d4ed8 0%, #2563eb 40%, #3b82f6 100%);
+      color:#fff;
+      border-radius:24px;
+      padding:32px;
+      box-shadow:var(--shadow);
+      margin-bottom:24px;
+    }
+    .hero h1{
+      margin:0 0 8px 0;
+      font-size:clamp(28px,4vw,40px);
+      line-height:1.2;
+    }
+    .hero p{
+      margin:8px 0 0 0;
+      opacity:.95;
+      font-size:16px;
+    }
+    .hero .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
+    .pill{
+      display:inline-block;
+      padding:8px 12px;
+      background:rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:999px;
+      font-size:14px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:300px 1fr;
+      gap:24px;
+      align-items:start;
+    }
+    .toc{
+      position:sticky;
+      top:18px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+    .toc h2{
+      margin:0 0 12px 0;
+      font-size:18px;
+    }
+    .toc a{
+      display:block;
+      color:var(--text);
+      text-decoration:none;
+      padding:9px 10px;
+      border-radius:10px;
+      margin:4px 0;
+      font-size:15px;
+    }
+    .toc a:hover{
+      background:var(--accent-soft);
+      color:var(--accent);
+    }
+    .content section{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      padding:26px;
+      margin-bottom:20px;
+    }
+    h2{
+      margin:0 0 14px 0;
+      font-size:28px;
+      line-height:1.3;
+    }
+    h3{
+      margin:24px 0 10px 0;
+      font-size:21px;
+      line-height:1.35;
+    }
+    h4{
+      margin:18px 0 8px 0;
+      font-size:17px;
+    }
+    p{margin:10px 0}
+    .lead{
+      color:var(--muted);
+      margin-top:-4px;
+    }
+    .note, .rule, .example, .warnbox{
+      border-radius:16px;
+      padding:16px 18px;
+      margin:14px 0;
+      border:1px solid var(--line);
+    }
+    .note{background:#f9fafb}
+    .rule{background:#eff6ff;border-color:#bfdbfe}
+    .example{background:#ecfdf5;border-color:#a7f3d0}
+    .warnbox{background:#fff7ed;border-color:#fed7aa}
+    .quote{
+      font-size:18px;
+      font-weight:700;
+      color:var(--accent);
+      margin:14px 0 6px 0;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin:14px 0 18px 0;
+      overflow:hidden;
+      border-radius:14px;
+      font-size:15px;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:12px 12px;
+      vertical-align:top;
+    }
+    th{
+      background:#f3f4f6;
+      text-align:left;
+      width:auto;
+    }
+    .tag{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+    }
+    .tag.good{background:#dcfce7;color:var(--good)}
+    .tag.warn{background:#fef3c7;color:var(--warn)}
+    .tag.bad{background:#fee2e2;color:var(--bad)}
+    .footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+      padding:10px 0 30px;
+    }
+    .small{font-size:14px;color:var(--muted)}
+    ul.clean{
+      margin:8px 0 0 0;
+      padding-left:20px;
+    }
+    .toplink{
+      display:inline-block;
+      margin-top:12px;
+      text-decoration:none;
+      color:var(--accent);
+      font-weight:700;
+    }
+    @media (max-width: 960px){
+      .grid{grid-template-columns:1fr}
+      .toc{position:relative; top:0}
+      .wrap{padding:16px}
+      .hero{padding:24px}
+      .content section{padding:20px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="top">
+    <header class="hero">
+      <h1>生暉食品營運｜智能助手使用手冊</h1>
+      <p>給員工使用的完整操作手冊。重點是看得懂、用得上、少出錯。</p>
+      <div class="meta">
+        <span class="pill">一頁式 HTML</span>
+        <span class="pill">可放 GitHub Pages</span>
+        <span class="pill">含可點目錄</span>
+        <span class="pill">含重要情境範例</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <aside class="toc">
+        <h2>目錄</h2>
+        <a href="#principles">01｜核心原則</a>
+        <a href="#flow">02｜整體流程</a>
+        <a href="#modules">03｜模組總覽</a>
+        <a href="#replenish">04｜補貨系統</a>
+        <a href="#packaging">05｜分裝助手</a>
+        <a href="#purchase">06｜採購助手</a>
+        <a href="#competitor">07｜競品助手</a>
+        <a href="#promotion">08｜特價設定</a>
+        <a href="#report">09｜回報助手</a>
+        <a href="#staff">10｜員工積分／技能認證</a>
+        <a href="#mistakes">11｜常見錯誤</a>
+        <a href="#summary">12｜最後總結</a>
+      </aside>
+
+      <main class="content">
+        <section id="principles">
+          <h2>01｜核心原則</h2>
+          <p class="lead">先記這四句，後面所有模組都圍繞這四個原則。</p>
+          <table>
+            <thead>
+              <tr>
+                <th>原則</th>
+                <th>說明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>貨要對</strong></td>
+                <td>商品正確、規格正確、位置正確。</td>
+              </tr>
+              <tr>
+                <td><strong>錢要對</strong></td>
+                <td>價格、促銷、請購數量要正確，不可亂設。</td>
+              </tr>
+              <tr>
+                <td><strong>每一步都要有紀錄</strong></td>
+                <td>系統不是裝飾，用了才有追蹤、才有分析、才有責任。</td>
+              </tr>
+              <tr>
+                <td><strong>不確定先問</strong></td>
+                <td>不要自己猜，不要亂選功能，不要跳步驟。</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="quote">流程對，系統才有用；資料錯，全部失效。</div>
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="flow">
+          <h2>02｜整體流程</h2>
+          <p class="lead">先用這張總流程圖理解整套系統在做什麼。</p>
+          <div class="rule">
+            <strong>巡貨架 → 補貨助手掃描 → 建立清單 → 今日補貨找貨 → 找不到標缺貨 → 建立請購單 → 採購助手判斷數量 → 採購</strong>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>階段</th>
+                <th>對應模組</th>
+                <th>目的</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>前場巡貨架</td>
+                <td>補貨助手</td>
+                <td>把需要補的商品先全部掃進清單。</td>
+              </tr>
+              <tr>
+                <td>後場找貨補貨</td>
+                <td>今日補貨</td>
+                <td>只看今天自己的補貨清單，依儲位或姓名排序找貨。</td>
+              </tr>
+              <tr>
+                <td>找不到貨</td>
+                <td>今日補貨／凌越</td>
+                <td>標記缺貨並建立請購單。</td>
+              </tr>
+              <tr>
+                <td>決定買多少</td>
+                <td>採購助手</td>
+                <td>看銷量、季節性、退貨比例、外送次數，輔助決定數量。</td>
+              </tr>
+            </tbody>
+          </table>
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="modules">
+          <h2>03｜模組總覽</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>模組</th>
+                <th>主要用途</th>
+                <th>什麼時候用</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>補貨助手</td>
+                <td>建立待補貨清單</td>
+                <td>巡貨架時發現缺貨或快沒貨。</td>
+              </tr>
+              <tr>
+                <td>今日補貨</td>
+                <td>依今日清單執行補貨</td>
+                <td>補貨助手掃完後，到倉庫找貨時。</td>
+              </tr>
+              <tr>
+                <td>分裝助手</td>
+                <td>進貨單分裝／需求分裝／印標貼標</td>
+                <td>需要分裝、貼標、補標時。</td>
+              </tr>
+              <tr>
+                <td>採購助手</td>
+                <td>輔助決定採購數量</td>
+                <td>請購單建立後，採購前判斷數量時。</td>
+              </tr>
+              <tr>
+                <td>競品助手</td>
+                <td>記錄競品價格、辨識新品</td>
+                <td>外出看到同款商品或新品時。</td>
+              </tr>
+              <tr>
+                <td>特價設定</td>
+                <td>把促銷活動發布到 LINE</td>
+                <td>有促銷商品、活動商品、集氣商品時。</td>
+              </tr>
+              <tr>
+                <td>回報助手</td>
+                <td>回報異常、錯誤、問題</td>
+                <td>看到標籤錯、商品錯、流程錯時。</td>
+              </tr>
+              <tr>
+                <td>員工積分／技能認證</td>
+                <td>績效與訓練追蹤</td>
+                <td>主管評分、訓練、考核時。</td>
+              </tr>
+            </tbody>
+          </table>
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="replenish">
+          <h2>04｜補貨系統</h2>
+          <p class="lead">補貨不是看到缺貨就衝去找貨。正確做法是：先掃、再找、再補、找不到就缺貨請購。</p>
+
+          <h3>4-1 補貨助手｜建立待補貨清單</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>內容</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>功能定位</td>
+                <td>建立今天要補的商品清單，不是直接補貨。</td>
+              </tr>
+              <tr>
+                <td>使用時機</td>
+                <td>巡貨架時，看到空了、快沒了、需要補。</td>
+              </tr>
+              <tr>
+                <td>操作方式</td>
+                <td>一邊巡貨架，一邊把要補的商品掃進去。</td>
+              </tr>
+              <tr>
+                <td>核心規則</td>
+                <td><strong>先全部掃完，再去找貨。</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="example">
+            <strong>重要範例：</strong><br>
+            你巡到烘焙區，發現泡打粉只剩 1 包、可可粉快沒了、蛋糕盒空了。<br>
+            正確做法不是看到一個就跑一次倉庫，而是把這三個商品先全部掃進補貨助手，建立完整清單後，再一起去找貨。
+          </div>
+
+          <div class="warnbox">
+            <strong>錯誤情境：</strong><br>
+            看到缺貨就直接跑倉庫。<br>
+            這樣很容易漏補、重複跑、也沒有完整紀錄。
+          </div>
+
+          <h3>4-2 今日補貨｜依今日清單執行補貨</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>內容</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>功能定位</td>
+                <td>只列出今日補貨紀錄，方便照清單找貨。</td>
+              </tr>
+              <tr>
+                <td>使用時機</td>
+                <td>補貨助手掃完之後，到倉庫找貨時使用。</td>
+              </tr>
+              <tr>
+                <td>可排序方式</td>
+                <td>依姓名、依儲位位置排序。</td>
+              </tr>
+              <tr>
+                <td>找不到商品</td>
+                <td>要標記成缺貨，後續建立請購單。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="example">
+            <strong>重要範例：</strong><br>
+            你已經掃完整個食品區的補貨品項，接著打開今日補貨，先依儲位排序，再照順序到倉庫找。這樣比一筆一筆亂找快很多。
+          </div>
+
+          <h3>4-3 補貨來源｜只會有兩種</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>來源</th>
+                <th>什麼時候選</th>
+                <th>重點說明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag good">倉庫</span></td>
+                <td>除了「剛進貨還在暫存區」以外，其他全部都選倉庫。</td>
+                <td>巡貨架補貨、一般倉庫補貨、分裝完成後入庫再補貨，全部都算倉庫。</td>
+              </tr>
+              <tr>
+                <td><span class="tag warn">進貨單</span></td>
+                <td>今天剛進貨、商品還在暫存區或推車，尚未入倉。</td>
+                <td>要掃進貨單單據，表示這批貨是今天新進貨直接補上架。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="rule">
+            <strong>判斷一句話：</strong><br>
+            剛進貨還在暫存區 → 選「進貨單」<br>
+            其他全部 → 選「倉庫」
+          </div>
+
+          <div class="note">
+            <strong>分裝補充規則：</strong><br>
+            分裝出來的商品，一律先入庫，再補貨。<br>
+            所以分裝商品後續補貨的來源，一律是「倉庫」，不是「分裝」。
+          </div>
+
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="packaging">
+          <h2>05｜分裝助手</h2>
+          <p class="lead">分裝助手有三種功能：進貨單分裝、需求分裝、印標貼標。員工最重要的是先判斷：到底有沒有進貨單、到底有沒有分裝。</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>功能類型</th>
+                <th>什麼時候用</th>
+                <th>怎麼操作</th>
+                <th>核心判斷</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>進貨單分裝</td>
+                <td>進貨單完成後，系統已列出分裝清單。</td>
+                <td>掃進貨單單據號碼。</td>
+                <td>有進貨單，而且這批分裝是本來就預計好的。</td>
+              </tr>
+              <tr>
+                <td>需求分裝</td>
+                <td>臨時需求、非計畫性分裝。</td>
+                <td>掃分裝商品條碼。</td>
+                <td>沒有進貨單，是現場臨時需要分小包。</td>
+              </tr>
+              <tr>
+                <td>印標貼標</td>
+                <td>沒有分裝，只是需要補標籤。</td>
+                <td>掃商品後印標貼上。</td>
+                <td>只有印標，沒有拆大包變小包。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>5-1 進貨單分裝</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>內容</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>來源</td>
+                <td>進貨單</td>
+              </tr>
+              <tr>
+                <td>操作方式</td>
+                <td>直接掃進貨單單據號碼</td>
+              </tr>
+              <tr>
+                <td>目的</td>
+                <td>記錄這張進貨單分裝完後，是誰分裝、誰貼標</td>
+              </tr>
+              <tr>
+                <td>固定規則</td>
+                <td><strong>進貨單分裝一定是同一人分裝、同一人貼標</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="example">
+            <strong>重要範例：</strong><br>
+            今天某供應商送來 50 入保鮮盒，進貨單完成後系統列出這批需要拆成 10 入。<br>
+            這時就用「進貨單分裝」，掃進貨單號碼，依清單分裝、印標、貼標。<br>
+            這整張進貨單的分裝與貼標是同一個人完成。
+          </div>
+
+          <h3>5-2 需求分裝</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>內容</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>來源</td>
+                <td>現場需求，非原本計畫內</td>
+              </tr>
+              <tr>
+                <td>操作方式</td>
+                <td>掃描分裝商品條碼</td>
+              </tr>
+              <tr>
+                <td>情境</td>
+                <td>大包拆小包，但不是來自這次進貨單</td>
+              </tr>
+              <tr>
+                <td>固定規則</td>
+                <td><strong>誰分裝，誰貼標</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="example">
+            <strong>重要範例：</strong><br>
+            現場客人要買小包，但目前沒有現成小包商品。<br>
+            這時是臨時需求，不是這次進貨單本來要分裝的，就要用「需求分裝」。<br>
+            掃商品條碼，分裝後立刻印標貼標。
+          </div>
+
+          <h3>5-3 印標貼標</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>內容</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>使用時機</td>
+                <td>商品沒有標籤，但沒有進行分裝。</td>
+              </tr>
+              <tr>
+                <td>操作方式</td>
+                <td>掃商品、印標、貼上。</td>
+              </tr>
+              <tr>
+                <td>核心判斷</td>
+                <td>沒有拆大包變小包，就不要用分裝功能。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="rule">
+            <strong>一句話判斷：</strong><br>
+            有進貨單 → 進貨單分裝<br>
+            沒進貨單但要拆小包 → 需求分裝<br>
+            沒有分裝只補標 → 印標貼標
+          </div>
+
+          <div class="warnbox">
+            <strong>常見錯誤：</strong><br>
+            有進貨單卻用需求分裝、沒有進貨單卻用進貨單分裝、分裝完沒貼標、沒分裝卻跑去用分裝功能。
+          </div>
+
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="purchase">
+          <h2>06｜採購助手</h2>
+          <p class="lead">採購助手不是拿來下單，是拿來判斷「要買多少」。</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>內容</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>功能定位</td>
+                <td>作為凌越請購單決定數量的輔助工具。</td>
+              </tr>
+              <tr>
+                <td>主要來源</td>
+                <td>補貨助手產生的缺貨清單，建立成請購單後進採購助手分析。</td>
+              </tr>
+              <tr>
+                <td>後續流程</td>
+                <td>採購貨架負責人再依請購單轉成各供應商採購單。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>6-1 採購助手看的資料</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>分析項目</th>
+                <th>用途</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>各週期銷售量</td>
+                <td>看 1 週、4 週、12 週、48 週，判斷穩定度與趨勢。</td>
+              </tr>
+              <tr>
+                <td>季節商品</td>
+                <td>判斷是否進入旺季，避免錯估需求。</td>
+              </tr>
+              <tr>
+                <td>間歇性商品</td>
+                <td>避免只因今天缺貨就補太多。</td>
+              </tr>
+              <tr>
+                <td>退貨比例</td>
+                <td>檢查是否曾進貨過量或商品有問題。</td>
+              </tr>
+              <tr>
+                <td>外送次數</td>
+                <td>判斷是否屬於商業配送常用品，避免缺貨。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="example">
+            <strong>重要範例：</strong><br>
+            某商品今天缺貨，但過去 12 週幾乎沒什麼銷量，退貨比例又高。<br>
+            這時就不能因為今天缺貨就下很多，而是要少量補貨，甚至先確認是否真的還需要持續備貨。
+          </div>
+
+          <div class="example">
+            <strong>重要範例：</strong><br>
+            某商品平常外送次數很多，且每週都有穩定出貨，即使今天缺貨數量不大，也不能太保守，因為一斷貨會影響固定商業客戶。
+          </div>
+
+          <div class="rule">
+            <strong>核心觀念：</strong><br>
+            缺貨 ≠ 要買很多<br>
+            缺貨 = 要判斷要買多少
+          </div>
+
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="competitor">
+          <h2>07｜競品助手</h2>
+          <p class="lead">競品助手有兩個重點：記錄同款商品的競爭價格，以及發現新品的採購機會。</p>
+
+          <h3>7-1 功能一｜記錄競爭價格</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>情境</th>
+                <th>操作方式</th>
+                <th>目的</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>看到市面上有我們也有賣的相同商品</td>
+                <td>掃碼，若資料庫撈得到商品資訊，就記錄該競爭廠商價格。</td>
+                <td>掌握市場價格，做後續促銷或價格調整參考。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="example">
+            <strong>重要範例：</strong><br>
+            在外面看到同款奶油，我們資料庫有這個商品。<br>
+            這時不是拍成新品，而是要直接記錄對方賣多少錢。
+          </div>
+
+          <h3>7-2 功能二｜新品辨識</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>情境</th>
+                <th>操作方式</th>
+                <th>最重要要拍到什麼</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>發現我們沒有賣的商品</td>
+                <td>使用拍照功能，系統自動做商品辨識，標註為新品。</td>
+                <td><strong>商品資訊、規格、供應商資訊</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note">
+            <strong>拍照規則：</strong><br>
+            新品一律要拍「有商品資訊的照片」。<br>
+            如果是競爭廠商現場看到的新品，最重要的是把進貨商／供應商資訊拍清楚，方便後續新品採購。
+          </div>
+
+          <div class="rule">
+            <strong>一句話判斷：</strong><br>
+            資料庫撈得到 → 記競品價格<br>
+            資料庫撈不到 → 拍照建新品
+          </div>
+
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="promotion">
+          <h2>08｜特價設定</h2>
+          <p class="lead">特價設定不是拿來思考價格，是拿來把促銷活動正確發布出去。</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>內容</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>功能定位</td>
+                <td>針對促銷商品、集氣商品或活動商品，發布到 LINE 官方帳號優惠活動。</td>
+              </tr>
+              <tr>
+                <td>操作方式</td>
+                <td>員工掃碼後，系統自動帶出商品資訊，再填這次的促銷文字與選項後發布。</td>
+              </tr>
+              <tr>
+                <td>價格決策</td>
+                <td>促銷價格不是在這裡亂設，應由萬用助手依商品資訊與效期建議價格。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="example">
+            <strong>重要範例：</strong><br>
+            某商品快到期，需要做促銷。<br>
+            先用萬用助手依商品資訊與到期時間判斷適合的促銷價，再進特價設定把活動文字、促銷內容發布到 LINE。
+          </div>
+
+          <div class="rule">
+            <strong>角色分工：</strong><br>
+            萬用助手 = 決定促銷價<br>
+            特價設定 = 發布促銷活動
+          </div>
+
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="report">
+          <h2>09｜回報助手</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>內容</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>使用時機</td>
+                <td>看到錯誤、異常、缺失、現場問題時。</td>
+              </tr>
+              <tr>
+                <td>必填內容</td>
+                <td>問題類型、照片、說明。</td>
+              </tr>
+              <tr>
+                <td>核心原則</td>
+                <td>有問題就回報，不要放著不管。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="example">
+            <strong>重要範例：</strong><br>
+            發現標籤貼錯、位置亂放、商品資訊不對，先拍照，再用回報助手填清楚問題內容。
+          </div>
+
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="staff">
+          <h2>10｜員工積分／技能認證</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>功能</th>
+                <th>用途</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>員工積分</td>
+                <td>紀錄工作表現、品質、執行情況。</td>
+              </tr>
+              <tr>
+                <td>技能認證／考核</td>
+                <td>作為訓練、學習、能力確認依據。</td>
+              </tr>
+            </tbody>
+          </table>
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="mistakes">
+          <h2>11｜常見錯誤</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>錯誤</th>
+                <th>為什麼不行</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>沒掃描就補貨</td>
+                <td>沒有紀錄，容易漏補、亂補。</td>
+              </tr>
+              <tr>
+                <td>看到缺貨就直接跑倉庫</td>
+                <td>效率差，容易重複跑。</td>
+              </tr>
+              <tr>
+                <td>分裝完沒貼標</td>
+                <td>商品無法上架、無法正確販售。</td>
+              </tr>
+              <tr>
+                <td>分裝後未入庫就補貨</td>
+                <td>流程錯，來源判斷會亂掉。</td>
+              </tr>
+              <tr>
+                <td>補貨來源選錯</td>
+                <td>後續分析與追蹤會失真。</td>
+              </tr>
+              <tr>
+                <td>找到不到商品卻沒標記缺貨</td>
+                <td>後面不會進請購流程，真的缺貨會被忽略。</td>
+              </tr>
+              <tr>
+                <td>有進貨單卻用需求分裝</td>
+                <td>紀錄錯誤，責任不清。</td>
+              </tr>
+              <tr>
+                <td>競品新品沒拍供應商資訊</td>
+                <td>後面很難做新品採購。</td>
+              </tr>
+              <tr>
+                <td>促銷價隨便設</td>
+                <td>可能直接影響毛利與營收。</td>
+              </tr>
+            </tbody>
+          </table>
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <section id="summary">
+          <h2>12｜最後總結</h2>
+          <div class="rule">
+            <strong>記住這 6 句就夠了：</strong>
+            <ul class="clean">
+              <li>補貨先掃，不要先跑。</li>
+              <li>今日補貨是照清單找，不是憑感覺找。</li>
+              <li>剛進貨才選進貨單，其他全部選倉庫。</li>
+              <li>有進貨單就用進貨單分裝，沒有才用需求分裝。</li>
+              <li>競品撈得到就記價格，撈不到就拍照建新品。</li>
+              <li>促銷價由萬用助手判斷，特價設定負責發布。</li>
+            </ul>
+          </div>
+          <div class="quote">流程做對，錯誤會變少；資料做對，管理才會有力量。</div>
+          <a class="toplink" href="#top">回到目錄 ↑</a>
+        </section>
+
+        <div class="footer">
+          生暉食品營運｜智能助手使用手冊
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
