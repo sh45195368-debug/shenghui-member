@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生暉食品營運｜2026 年度營運節奏</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --red-bg: #fef2f2;
+      --red-text: #b91c1c;
+      --orange-bg: #fff7ed;
+      --orange-text: #c2410c;
+      --yellow-bg: #fffbeb;
+      --yellow-text: #a16207;
+      --green-bg: #f0fdf4;
+      --green-text: #166534;
+      --blue: #2563eb;
+      --shadow: 0 8px 24px rgba(0,0,0,0.06);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 20px 14px 40px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0f172a, #1d4ed8);
+      color: #fff;
+      border-radius: 22px;
+      padding: 24px 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      margin: 0;
+      color: rgba(255,255,255,0.9);
+      font-size: 15px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 18px 0 22px;
+    }
+
+    .summary-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+
+    .summary-card .label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .summary-card .value {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .note {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-size: 14px;
+    }
+
+    .table-card {
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    .table-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .table-header h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .chip.red { background: var(--red-bg); color: var(--red-text); }
+    .chip.orange { background: var(--orange-bg); color: var(--orange-text); }
+    .chip.yellow { background: var(--yellow-bg); color: var(--yellow-text); }
+    .chip.green { background: var(--green-bg); color: var(--green-text); }
+
+    .table-scroll { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+
+    thead th {
+      text-align: left;
+      background: #f8fafc;
+      color: #374151;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 14px 14px;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tbody td {
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    tbody tr:hover { background: #fafcff; }
+
+    .time {
+      font-weight: 800;
+      color: #111827;
+      white-space: nowrap;
+      width: 120px;
+    }
+
+    .name {
+      font-weight: 800;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .desc {
+      color: #374151;
+    }
+
+    .items {
+      color: #111827;
+    }
+
+    .items small,
+    .desc small {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .importance {
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .imp-5 { color: var(--red-text); }
+    .imp-4 { color: var(--orange-text); }
+    .imp-3 { color: var(--yellow-text); }
+    .imp-2 { color: var(--green-text); }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .summary { grid-template-columns: repeat(2, 1fr); }
+      .hero h1 { font-size: 24px; }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { padding: 12px 10px 28px; }
+      .summary { grid-template-columns: 1fr; }
+      .hero { padding: 18px 16px; }
+      .table-header h2 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>生暉食品營運｜2026 年度營運節奏</h1>
+      <p>這一頁是全年節奏總表。先看整年大方向；每個檔期的實際執行，另外放進待辦事項處理。</p>
+    </section>
+
+    <section class="summary">
+      <div class="summary-card">
+        <div class="label">全年重點檔期</div>
+        <div class="value">14 檔</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">最高優先檔</div>
+        <div class="value">春節 / 梅子季 / 中秋</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">宗教人流檔</div>
+        <div class="value">大甲媽 / 中元</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">烘焙送禮檔</div>
+        <div class="value">情人節 / 母親節 / 中秋 / 聖誕</div>
+      </div>
+    </section>
+
+    <div class="note">
+      <strong>使用方式：</strong>這頁只負責讓大家知道全年節奏。真正要做的工作，另外再拆進待辦事項。<br>
+      <strong>重要提醒：</strong>中秋節一定要提前 2 個月準備；春節與中秋是年度兩個最大檔期。
+    </div>
+
+    <section class="table-card">
+      <div class="table-header">
+        <h2>2026 檔期總表</h2>
+        <div class="legend">
+          <span class="chip red">★★★★★ 核心大檔</span>
+          <span class="chip orange">★★★★ 重要檔</span>
+          <span class="chip yellow">★★★ 常規促銷檔</span>
+          <span class="chip green">★★ 補充檔</span>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>檔期名稱</th>
+              <th>重要備品</th>
+              <th>說明</th>
+              <th>重要性</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="time">2/14</td>
+              <td class="name">西洋情人節</td>
+              <td class="items">巧克力、可可粉、包裝盒、禮盒材料</td>
+              <td class="desc">甜點與小禮盒需求</td>
+              <td class="importance imp-3">★★★</td>
+            </tr>
+            <tr>
+              <td class="time">12～2月<br><small>主日 2/17</small></td>
+              <td class="name">春節</td>
+              <td class="items">雪Q餅、牛軋糖、南棗核桃糕（棗泥漿、核桃乾、糖果紙、糯米紙、水麥芽）、糯米船、年糕、杏仁片、草莓季商品、和果子、大丸平底、湯圓、糯米粉、在來米</td>
+              <td class="desc">年度最大檔，送禮、家庭採買、甜點旺季一起動</td>
+              <td class="importance imp-5">★★★★★</td>
+            </tr>
+            <tr>
+              <td class="time">2/20～5月</td>
+              <td class="name">梅子季</td>
+              <td class="items">青梅/黃梅、冰糖、紅冰糖、二砂糖、白砂糖、蜂蜜、鹽、高粱酒、米酒、燒酎、清酒、白蘭地、糯米醋、蘋果醋、白醋、玻璃密封罐（2L/5L/10L）、食品級塑膠桶、玻璃瓶、脫氧劑、防潮袋、標籤貼紙、不鏽鋼濾網、玻璃攪拌棒、量杯、電子秤、小型封口機</td>
+              <td class="desc">DIY 製作需求強，可整組銷售，客單高</td>
+              <td class="importance imp-5">★★★★★</td>
+            </tr>
+            <tr>
+              <td class="time">4/5</td>
+              <td class="name">清明節</td>
+              <td class="items">花生粉、糖粉、海苔粉</td>
+              <td class="desc">傳統祭拜與食品需求</td>
+              <td class="importance imp-2">★★</td>
+            </tr>
+            <tr>
+              <td class="time">4/17～4/26</td>
+              <td class="name">大甲媽祖節</td>
+              <td class="items">瓶裝水、飲料材料、拜拜商品、大包裝食品</td>
+              <td class="desc">人流高峰、補給需求、宗教採買</td>
+              <td class="importance imp-4">★★★★</td>
+            </tr>
+            <tr>
+              <td class="time">5/9</td>
+              <td class="name">媽祖聖誕</td>
+              <td class="items">拜拜供品、食品材料</td>
+              <td class="desc">宗教需求延續</td>
+              <td class="importance imp-2">★★</td>
+            </tr>
+            <tr>
+              <td class="time">5/10</td>
+              <td class="name">母親節</td>
+              <td class="items">奶油、麵粉、蛋糕材料、裝飾材料、蛋糕盒</td>
+              <td class="desc">烘焙蛋糕需求高峰</td>
+              <td class="importance imp-4">★★★★</td>
+            </tr>
+            <tr>
+              <td class="time">5～6月<br><small>主日 6/19</small></td>
+              <td class="name">端午節</td>
+              <td class="items">長糯米、水煮花生、粽葉、繩子、鹹蛋黃、香菇、乾蝦仁、紅蔥酥</td>
+              <td class="desc">粽子 DIY 與餐飲需求</td>
+              <td class="importance imp-4">★★★★</td>
+            </tr>
+            <tr>
+              <td class="time">8/8</td>
+              <td class="name">父親節</td>
+              <td class="items">蛋糕材料、禮盒</td>
+              <td class="desc">次於母親節的送禮需求</td>
+              <td class="importance imp-3">★★★</td>
+            </tr>
+            <tr>
+              <td class="time">7/31～8/30<br><small>主日 8/27</small></td>
+              <td class="name">中元普渡</td>
+              <td class="items">拜拜商品、大包裝食品、箱購商品</td>
+              <td class="desc">公司行號大量採購</td>
+              <td class="importance imp-4">★★★★</td>
+            </tr>
+            <tr>
+              <td class="time">9/25<br><small>提前 2 個月準備</small></td>
+              <td class="name">中秋節</td>
+              <td class="items">冰心麻糬粉、肉鬆、餡料、蛋黃（醃的要帶紅土）、無水奶油、酥油、芝麻粒、禮盒（6/9/12 入）、盒蓋分開、襯盒 65/70/75、西點袋 43×27、52×30、堅果</td>
+              <td class="desc">年度第二大檔，送禮與烘焙主力；堅果需提前備貨，10 入內套不要再買</td>
+              <td class="importance imp-5">★★★★★</td>
+            </tr>
+            <tr>
+              <td class="time">10月</td>
+              <td class="name">萬聖節</td>
+              <td class="items">糖果、裝飾包材</td>
+              <td class="desc">氣氛型銷售</td>
+              <td class="importance imp-2">★★</td>
+            </tr>
+            <tr>
+              <td class="time">11/11</td>
+              <td class="name">雙11</td>
+              <td class="items">熱銷商品、組合包、清庫存商品</td>
+              <td class="desc">促銷檔期</td>
+              <td class="importance imp-3">★★★</td>
+            </tr>
+            <tr>
+              <td class="time">12月</td>
+              <td class="name">聖誕節</td>
+              <td class="items">薑餅屋材料、包材、雪Q餅材料</td>
+              <td class="desc">節慶檔，同時開始銜接春節預熱</td>
+              <td class="importance imp-3">★★★</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      生暉食品營運｜全年節奏表 ・ 本頁只看節奏，實際執行請看待辦事項
+    </div>
+  </div>
+</body>
+</html>
