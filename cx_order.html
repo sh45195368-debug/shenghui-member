@@ -25,9 +25,7 @@
     --radius: 18px;
   }
 
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
 
   body {
     margin: 0;
@@ -83,14 +81,6 @@
     line-height: 1.5;
   }
 
-  .row-between {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
   .history-btn,
   .freq-btn,
   .search-btn {
@@ -139,6 +129,41 @@
 
   .search-input:focus {
     border-color: var(--primary);
+  }
+
+  .toggle-wrap,
+  .today-order-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .today-order-box {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #fff;
+  }
+
+  .today-order-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .today-order-items {
+    margin-top: 8px;
+    border-top: 1px dashed var(--line);
+    padding-top: 8px;
+  }
+
+  .today-order-item {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
   }
 
   .order-item {
@@ -258,24 +283,6 @@
     font-size: 14px;
     padding: 10px 0;
   }
-
-  .toggle-wrap {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  @media (max-width: 640px) {
-    .hero h1 {
-      font-size: 22px;
-    }
-
-    .qty-input {
-      width: 88px;
-    }
-  }
 </style>
 </head>
 <body>
@@ -289,6 +296,13 @@
     <div class="card">
       <h2>客戶資料</h2>
       <div id="customerInfo" class="sub">讀取中...</div>
+      <div class="sub" style="margin-bottom:0;">實際價格、庫存與交期以門市確認為準。</div>
+    </div>
+
+    <div class="card">
+      <h2>今日已送出訂單</h2>
+      <div class="sub">可查看今天已送出的內容，避免重複下單。</div>
+      <div id="todaySubmittedOrders">讀取中...</div>
     </div>
 
     <div class="card">
@@ -340,7 +354,7 @@
   </div>
 
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyaXNyIXqADwF1JjKJPI12gLbHCL9ZmQSVyATwDlRnlvx5hqsdQi1OYNMSfRDiWsTeSxQ/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbzvljq0xx9MFdKu06tO9J6xVAkdyxnNyYFBU2sxoePvOWK93CwpuA44F-erUjsNhTlw/exec';
 
   let token = '';
   let customerId = '';
@@ -349,6 +363,7 @@
   let recentOrders = [];
   let frequentItems = [];
   let searchableItems = [];
+  let todaySubmittedOrders = [];
   let currentItems = [];
 
   let frequentExpanded = false;
@@ -364,6 +379,7 @@
     if (!token) {
       setError('網址缺少 token');
       document.getElementById('customerInfo').textContent = '無法辨識客戶';
+      document.getElementById('todaySubmittedOrders').innerHTML = '<div class="empty">無法辨識客戶</div>';
       return;
     }
 
@@ -374,6 +390,7 @@
       if (!data.success) {
         setError(data.message || '讀取失敗');
         document.getElementById('customerInfo').textContent = '無法辨識客戶';
+        document.getElementById('todaySubmittedOrders').innerHTML = '<div class="empty">讀取失敗</div>';
         return;
       }
 
@@ -382,9 +399,11 @@
       recentOrders = data.recent_orders || [];
       frequentItems = (data.frequent_items || []).slice(0, 20);
       searchableItems = data.searchable_items || [];
+      todaySubmittedOrders = data.today_submitted_orders || [];
 
       document.getElementById('customerInfo').textContent = `${customerName}（${customerId}）`;
 
+      renderTodaySubmittedOrders();
       renderHistory();
       renderFrequent();
       renderSearchResults();
@@ -392,7 +411,34 @@
 
     } catch (err) {
       setError('讀取資料失敗：' + err.message);
+      document.getElementById('todaySubmittedOrders').innerHTML = '<div class="empty">讀取失敗</div>';
     }
+  }
+
+  function renderTodaySubmittedOrders() {
+    const el = document.getElementById('todaySubmittedOrders');
+
+    if (!todaySubmittedOrders.length) {
+      el.innerHTML = '<div class="empty">今天尚未送出訂單</div>';
+      return;
+    }
+
+    el.innerHTML = todaySubmittedOrders.map(order => `
+      <div class="today-order-box">
+        <div class="today-order-head">
+          <div class="today-order-title">訂單編號：${escapeHtml(order.order_no)}</div>
+          <div class="meta">送出時間：${escapeHtml(order.submit_time)}</div>
+        </div>
+
+        <div class="today-order-items">
+          ${order.items.map(item => `
+            <div class="today-order-item">
+              ${escapeHtml(item.product_name)}　${Number(item.qty)}　${escapeHtml(item.unit)}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
   }
 
   function renderHistory() {
@@ -638,6 +684,7 @@
 
       setSuccess(`送出成功，訂單編號：${data.order_no}`);
       clearCurrentOrder();
+      await loadDashboard();
 
     } catch (err) {
       setError('送出失敗：' + err.message);
