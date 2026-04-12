@@ -117,7 +117,8 @@
     line-height: 1.55;
   }
 
-  .search-input {
+  .search-input,
+  .manual-input {
     width: 100%;
     padding: 14px;
     border: 1px solid var(--line);
@@ -125,14 +126,17 @@
     font-size: 16px;
     outline: none;
     color: var(--text);
+    margin-bottom: 10px;
   }
 
-  .search-input:focus {
+  .search-input:focus,
+  .manual-input:focus {
     border-color: var(--primary);
   }
 
   .toggle-wrap,
-  .today-order-head {
+  .today-order-head,
+  .manual-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -260,6 +264,15 @@
     background: #e3ecee;
   }
 
+  .btn-accent {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-accent:hover {
+    opacity: 0.92;
+  }
+
   .message {
     margin-top: 12px;
     border-radius: 12px;
@@ -283,6 +296,17 @@
     font-size: 14px;
     padding: 10px 0;
   }
+
+  .manual-area {
+    display: none;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .manual-area.show {
+    display: block;
+  }
 </style>
 </head>
 <body>
@@ -290,7 +314,7 @@
 
     <div class="hero">
       <h1>客戶補貨系統</h1>
-      <p>可直接複製最近訂單、加入常用商品，或搜尋過去買過的商品後送出補貨單。</p>
+      <p>可直接複製最近訂單、加入常用商品、搜尋過去買過的商品，或手動新增未買過商品後送出補貨單。</p>
     </div>
 
     <div class="card">
@@ -301,7 +325,7 @@
 
     <div class="card">
       <h2>今日已送出訂單</h2>
-      <div class="sub">可查看今天已送出的內容，避免重複下單。</div>
+      <div class="sub">可查看今天已送出的內容，避免重複下單，也可直接複製為新訂單。</div>
       <div id="todaySubmittedOrders">讀取中...</div>
     </div>
 
@@ -336,11 +360,25 @@
         oninput="renderSearchResults()"
       />
       <div id="searchResultList" style="margin-top:12px;"></div>
+
+      <div class="manual-head" style="margin-top:12px;">
+        <div class="sub" style="margin:0;">找不到商品時，可手動新增。</div>
+        <button class="btn btn-secondary" type="button" onclick="toggleManualItemArea()" style="width:auto;padding:10px 14px;">
+          找不到商品？
+        </button>
+      </div>
+
+      <div id="manualItemArea" class="manual-area">
+        <input id="manualProductName" class="manual-input" type="text" placeholder="商品名稱，例如：發酵奶油" />
+        <input id="manualProductSpec" class="manual-input" type="text" placeholder="規格 / 備註，例如：1kg、25kg、紅蓋" />
+        <input id="manualProductQty" class="manual-input" type="number" min="1" step="1" placeholder="數量" />
+        <button class="btn btn-accent" type="button" onclick="addManualItem()">加入本次訂單</button>
+      </div>
     </div>
 
     <div class="card">
       <h2>本次訂單</h2>
-      <div class="sub">可混合：最近訂單複製＋常用商品加入＋搜尋商品加入。</div>
+      <div class="sub">可混合：最近訂單複製＋常用商品加入＋搜尋商品加入＋手動新增商品。</div>
       <div id="currentOrder" class="empty">請先從上方加入商品</div>
 
       <div class="action-bar">
@@ -354,7 +392,7 @@
   </div>
 
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbzvljq0xx9MFdKu06tO9J6xVAkdyxnNyYFBU2sxoePvOWK93CwpuA44F-erUjsNhTlw/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbweZBWhONuIARJhGgVY2n-EPhxfWEb79akP3pM3r7D4ivg4n-4AZR79Inhxe_pzCSpO-A/exec';
 
   let token = '';
   let customerId = '';
@@ -423,22 +461,54 @@
       return;
     }
 
-    el.innerHTML = todaySubmittedOrders.map(order => `
+    el.innerHTML = todaySubmittedOrders.map((order, index) => `
       <div class="today-order-box">
         <div class="today-order-head">
           <div class="today-order-title">訂單編號：${escapeHtml(order.order_no)}</div>
           <div class="meta">送出時間：${escapeHtml(order.submit_time)}</div>
         </div>
 
+        <div style="margin-top:10px;">
+          <button
+            class="btn btn-secondary"
+            type="button"
+            onclick="copyTodaySubmittedOrder(${index})"
+            style="width:auto;padding:10px 14px;"
+          >
+            複製為新訂單
+          </button>
+        </div>
+
         <div class="today-order-items">
           ${order.items.map(item => `
             <div class="today-order-item">
-              ${escapeHtml(item.product_name)}　${Number(item.qty)}　${escapeHtml(item.unit)}
+              ${escapeHtml(item.product_name)}　${Number(item.qty)}　${escapeHtml(item.unit || '')}
             </div>
           `).join('')}
         </div>
       </div>
     `).join('');
+  }
+
+  function copyTodaySubmittedOrder(index) {
+    const selected = todaySubmittedOrders[index];
+    if (!selected || !selected.items) return;
+
+    currentItems = selected.items.map(item => ({
+      product_id: item.product_id || 'NEW',
+      product_name: item.product_name || '',
+      unit: item.unit || '',
+      qty: Number(item.qty) || 0
+    }));
+
+    mergeCurrentItems();
+    renderCurrentOrder();
+    clearMessage();
+
+    const orderArea = document.getElementById('currentOrder');
+    if (orderArea) {
+      orderArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   function renderHistory() {
@@ -524,6 +594,42 @@
     `).join('');
   }
 
+  function toggleManualItemArea() {
+    const el = document.getElementById('manualItemArea');
+    el.classList.toggle('show');
+  }
+
+  function addManualItem() {
+    const name = (document.getElementById('manualProductName').value || '').trim();
+    const spec = (document.getElementById('manualProductSpec').value || '').trim();
+    const qty = Number(document.getElementById('manualProductQty').value || 0);
+
+    if (!name) {
+      setError('請輸入商品名稱');
+      return;
+    }
+
+    if (qty <= 0) {
+      setError('請輸入正確數量');
+      return;
+    }
+
+    currentItems.push({
+      product_id: 'NEW',
+      product_name: name,
+      unit: spec,
+      qty: qty
+    });
+
+    mergeCurrentItems();
+    renderCurrentOrder();
+    clearMessage();
+
+    document.getElementById('manualProductName').value = '';
+    document.getElementById('manualProductSpec').value = '';
+    document.getElementById('manualProductQty').value = '';
+  }
+
   function copyRecentOrder(index) {
     const selected = recentOrders[index];
     if (!selected) return;
@@ -573,13 +679,14 @@
     const map = {};
 
     currentItems.forEach(item => {
-      const key = item.product_id + '||' + item.unit;
+      const safeUnit = item.unit || '';
+      const key = item.product_id + '||' + safeUnit + '||' + item.product_name;
 
       if (!map[key]) {
         map[key] = {
           product_id: item.product_id,
           product_name: item.product_name,
-          unit: item.unit,
+          unit: safeUnit,
           qty: 0
         };
       }
@@ -605,7 +712,7 @@
         <div class="order-name">${escapeHtml(item.product_name)}</div>
         <div class="order-meta">
           商品編號：${escapeHtml(item.product_id)}<br>
-          單位：${escapeHtml(item.unit)}
+          規格 / 備註：${escapeHtml(item.unit || '')}
         </div>
 
         <div class="order-actions">
@@ -617,7 +724,7 @@
             value="${Number(item.qty)}"
             onchange="updateQty(${index}, this.value)"
           />
-          <div class="unit-text">${escapeHtml(item.unit)}</div>
+          <div class="unit-text">${escapeHtml(item.unit || '')}</div>
           <button class="remove-btn" type="button" onclick="removeItem(${index})">刪除</button>
         </div>
       </div>
