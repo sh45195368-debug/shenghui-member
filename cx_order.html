@@ -13,7 +13,7 @@
       color: #222;
     }
     .wrap {
-      max-width: 760px;
+      max-width: 860px;
       margin: 0 auto;
     }
     .card {
@@ -23,14 +23,14 @@
       margin-bottom: 14px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
-    h1, h2, h3 {
+    h1, h2 {
       margin: 0 0 12px;
     }
     .muted {
       color: #666;
       font-size: 14px;
     }
-    .history-btn {
+    .history-btn, .freq-btn {
       display: block;
       width: 100%;
       text-align: left;
@@ -42,12 +42,17 @@
       cursor: pointer;
       font-size: 15px;
     }
-    .history-btn:hover {
+    .history-btn:hover, .freq-btn:hover {
       background: #f9f9f9;
+    }
+    .freq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
     }
     .item-row {
       display: grid;
-      grid-template-columns: 1fr 100px 70px;
+      grid-template-columns: 1fr 100px 70px 60px;
       gap: 8px;
       align-items: center;
       padding: 10px 0;
@@ -60,7 +65,7 @@
       font-size: 15px;
       line-height: 1.4;
     }
-    .unit {
+    .unit, .small {
       color: #666;
       font-size: 13px;
     }
@@ -82,6 +87,12 @@
       background: #111;
       color: #fff;
       width: 100%;
+    }
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+      width: 100%;
+      margin-top: 10px;
     }
     .btn-primary:disabled {
       background: #999;
@@ -105,6 +116,13 @@
       color: #666;
       padding: 12px 0;
     }
+    .remove-btn {
+      border: none;
+      background: #eee;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -120,33 +138,42 @@
     </div>
 
     <div class="card">
+      <h2>常用商品前 30</h2>
+      <div id="frequentList">讀取中...</div>
+    </div>
+
+    <div class="card">
       <h2>本次訂單</h2>
-      <div id="currentOrder" class="empty">請先點選上方某一筆訂單複製</div>
+      <div id="currentOrder" class="empty">請先點選上方某一筆訂單複製，或從常用商品加入</div>
       <button id="submitBtn" class="btn btn-primary" onclick="submitOrder()" disabled>送出訂單</button>
+      <button class="btn btn-danger" onclick="clearCurrentOrder()">清空本次訂單</button>
       <div id="messageBox"></div>
     </div>
   </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbx5KCAvAp0PVvRXlvBIBTPz2uriB_lIEyrBDi9qA0FpCaRzSVdglYVX_DcuLUi-zi76xg/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxd1QNAqqavItWzGY35ko8mRWDoEgjDnnn--3PMv2PxqcpgX3m9eBuEJ-G7Xcat46mhDA/exec';
 
     let token = '';
     let customerId = '';
     let customerName = '';
     let currentItems = [];
+    let historyOrders = [];
+    let frequentItems = [];
 
     function getTokenFromUrl() {
       const params = new URLSearchParams(window.location.search);
       return params.get('token') || '';
     }
 
-    async function loadHistory() {
+    async function loadData() {
       token = getTokenFromUrl();
 
       if (!token) {
         showError('網址缺少 token');
-        document.getElementById('historyList').innerHTML = '';
         document.getElementById('customerInfo').textContent = '無法辨識客戶';
+        document.getElementById('historyList').innerHTML = '';
+        document.getElementById('frequentList').innerHTML = '';
         return;
       }
 
@@ -157,46 +184,62 @@
 
         if (!data.success) {
           showError(data.message || '讀取失敗');
-          document.getElementById('historyList').innerHTML = '';
           document.getElementById('customerInfo').textContent = '無法辨識客戶';
           return;
         }
 
         customerId = data.customer_id;
         customerName = data.customer_name;
+        historyOrders = data.orders || [];
+        frequentItems = data.frequent_items || [];
 
         document.getElementById('customerInfo').textContent =
           `${customerName}（${customerId}）`;
 
-        renderHistory(data.orders || []);
+        renderHistory();
+        renderFrequent();
+        renderCurrentOrder();
+
       } catch (err) {
-        showError('讀取歷史訂單失敗：' + err.message);
+        showError('讀取資料失敗：' + err.message);
       }
     }
 
-    function renderHistory(orders) {
+    function renderHistory() {
       const el = document.getElementById('historyList');
 
-      if (!orders.length) {
+      if (!historyOrders.length) {
         el.innerHTML = '<div class="empty">目前沒有歷史訂單</div>';
         return;
       }
 
-      el.innerHTML = orders.map((order, index) => {
-        return `
-          <button class="history-btn" onclick="copyOrder(${index})">
-            <div><strong>${order.order_date}</strong></div>
-            <div class="muted">共 ${order.items.length} 項，點我直接複製</div>
-          </button>
-        `;
-      }).join('');
-
-      window._orders = orders;
+      el.innerHTML = historyOrders.map((order, index) => `
+        <button class="history-btn" onclick="copyHistoryOrder(${index})">
+          <div><strong>${order.order_date}</strong></div>
+          <div class="muted">共 ${order.items.length} 項，點我直接複製</div>
+        </button>
+      `).join('');
     }
 
-    function copyOrder(index) {
-      const orders = window._orders || [];
-      const selected = orders[index];
+    function renderFrequent() {
+      const el = document.getElementById('frequentList');
+
+      if (!frequentItems.length) {
+        el.innerHTML = '<div class="empty">目前沒有常用商品資料</div>';
+        return;
+      }
+
+      el.innerHTML = `<div class="freq-grid">` + frequentItems.map((item, index) => `
+        <button class="freq-btn" onclick="addFrequentItem(${index})">
+          <div><strong>${escapeHtml(item.product_name)}</strong></div>
+          <div class="small">商品編號：${escapeHtml(item.product_id)}</div>
+          <div class="small">單位：${escapeHtml(item.unit)}｜下單次數：${item.order_count}</div>
+        </button>
+      `).join('') + `</div>`;
+    }
+
+    function copyHistoryOrder(index) {
+      const selected = historyOrders[index];
       if (!selected) return;
 
       currentItems = selected.items.map(item => ({
@@ -206,8 +249,44 @@
         qty: item.qty
       }));
 
+      mergeCurrentItems();
       renderCurrentOrder();
       clearMessage();
+    }
+
+    function addFrequentItem(index) {
+      const item = frequentItems[index];
+      if (!item) return;
+
+      currentItems.push({
+        product_id: item.product_id,
+        product_name: item.product_name,
+        unit: item.unit,
+        qty: 1
+      });
+
+      mergeCurrentItems();
+      renderCurrentOrder();
+      clearMessage();
+    }
+
+    function mergeCurrentItems() {
+      const map = {};
+
+      currentItems.forEach(item => {
+        const key = item.product_id + '||' + item.unit;
+        if (!map[key]) {
+          map[key] = {
+            product_id: item.product_id,
+            product_name: item.product_name,
+            unit: item.unit,
+            qty: 0
+          };
+        }
+        map[key].qty += Number(item.qty) || 0;
+      });
+
+      currentItems = Object.values(map).filter(item => item.qty > 0);
     }
 
     function renderCurrentOrder() {
@@ -215,7 +294,7 @@
       const btn = document.getElementById('submitBtn');
 
       if (!currentItems.length) {
-        el.innerHTML = '<div class="empty">請先點選上方某一筆訂單複製</div>';
+        el.innerHTML = '<div class="empty">請先點選上方某一筆訂單複製，或從常用商品加入</div>';
         btn.disabled = true;
         return;
       }
@@ -230,6 +309,9 @@
             <input type="number" min="0" step="1" value="${item.qty}" onchange="updateQty(${index}, this.value)" />
           </div>
           <div>${escapeHtml(item.unit)}</div>
+          <div>
+            <button class="remove-btn" onclick="removeItem(${index})">刪除</button>
+          </div>
         </div>
       `).join('');
 
@@ -239,6 +321,19 @@
     function updateQty(index, value) {
       const qty = Number(value);
       currentItems[index].qty = isNaN(qty) ? 0 : qty;
+      currentItems = currentItems.filter(item => item.qty > 0);
+      renderCurrentOrder();
+    }
+
+    function removeItem(index) {
+      currentItems.splice(index, 1);
+      renderCurrentOrder();
+    }
+
+    function clearCurrentOrder() {
+      currentItems = [];
+      renderCurrentOrder();
+      clearMessage();
     }
 
     async function submitOrder() {
@@ -280,6 +375,7 @@
         }
 
         showSuccess(`送出成功，訂單編號：${data.order_no}`);
+        clearCurrentOrder();
       } catch (err) {
         showError('送出失敗：' + err.message);
       } finally {
@@ -311,7 +407,7 @@
         .replaceAll("'", '&#039;');
     }
 
-    loadHistory();
+    loadData();
   </script>
 </body>
 </html>
