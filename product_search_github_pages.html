@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>智能助理搜尋</title>
+  <style>
+    :root {
+      --gold: #c9a24a;
+      --gold-dark: #b18b36;
+      --navy: #314457;
+      --navy-2: #3d5166;
+      --white: #ffffff;
+      --text: #1f2937;
+      --muted: rgba(255,255,255,.78);
+      --line: rgba(255,255,255,.16);
+      --card: rgba(255,255,255,.12);
+      --shadow: 0 14px 40px rgba(0,0,0,.22);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      color: var(--white);
+      background: #ececec;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background:
+        linear-gradient(180deg, rgba(49,68,87,.90) 0%, rgba(59,77,96,.88) 58%, rgba(78,94,110,.82) 100%),
+        url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    }
+
+    .top-strip {
+      background: #d9a63a;
+      padding: 14px 16px 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .line-btn {
+      background: #06c755;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      min-width: 220px;
+      max-width: 420px;
+      width: 72%;
+      padding: 16px 20px;
+      font-size: 20px;
+      font-weight: 800;
+      box-shadow: 0 6px 18px rgba(0,0,0,.18);
+    }
+
+    .header {
+      background: rgba(255,255,255,.95);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 16px;
+    }
+
+    .menu-btn, .cart-btn {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: none;
+      background: transparent;
+      color: #777;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #62778a 0%, #44586a 45%, #d8af4e 46%, #b78c36 100%);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 34px;
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(0,0,0,.12);
+    }
+
+    .brand-text {
+      min-width: 0;
+      text-align: center;
+      line-height: 1.15;
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: #455c6e;
+      white-space: nowrap;
+    }
+
+    .brand-sub {
+      font-size: 13px;
+      color: #444;
+      margin-top: 4px;
+      white-space: nowrap;
+    }
+
+    .hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 26px 16px 50px;
+    }
+
+    .search-panel {
+      width: 100%;
+      max-width: 760px;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: 54px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      text-shadow: 0 4px 14px rgba(0,0,0,.22);
+    }
+
+    .hero-sub {
+      font-size: 26px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .search-shell {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 10px 12px;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    #searchInput {
+      width: 100%;
+      height: 72px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #fff;
+      font-size: 34px;
+      padding: 0 12px 0 16px;
+    }
+
+    #searchInput::placeholder {
+      color: rgba(255,255,255,.88);
+    }
+
+    .tool-btn {
+      width: 62px;
+      height: 62px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      font-size: 26px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: .15s ease;
+    }
+
+    .tool-btn:hover, .tool-btn.active {
+      background: rgba(255,255,255,.30);
+      transform: translateY(-1px);
+    }
+
+    .tool-btn.search-btn {
+      background: rgba(255,255,255,.22);
+      font-size: 30px;
+    }
+
+    .hint-row {
+      margin-top: 18px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hint-chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .filter-panel {
+      margin-top: 18px;
+      display: none;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      text-align: left;
+    }
+
+    .filter-panel.open {
+      display: block;
+    }
+
+    .filter-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: rgba(255,255,255,.92);
+    }
+
+    .field select {
+      width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.20);
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      padding: 0 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .field select option {
+      color: #111;
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .small-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .small-btn.primary {
+      background: var(--gold);
+      color: #fff;
+    }
+
+    .small-btn.secondary {
+      background: rgba(255,255,255,.14);
+      color: #fff;
+    }
+
+    .suggestions {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 10px);
+      background: rgba(255,255,255,.96);
+      color: #111;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,.24);
+      display: none;
+      text-align: left;
+      max-height: 340px;
+      overflow-y: auto;
+      z-index: 30;
+    }
+
+    .suggestion-item {
+      padding: 12px 14px;
+      border-bottom: 1px solid #ececec;
+      cursor: pointer;
+    }
+
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover, .suggestion-item.active { background: #f6f8fb; }
+    .s-main { font-size: 16px; font-weight: 800; color: #223; }
+    .s-sub { margin-top: 4px; font-size: 13px; color: #666; }
+
+    .status-line {
+      margin-top: 14px;
+      color: rgba(255,255,255,.92);
+      font-size: 15px;
+      min-height: 24px;
+    }
+
+    .results-wrap {
+      width: 100%;
+      max-width: 900px;
+      margin: 22px auto 0;
+      display: none;
+    }
+
+    .results-wrap.show {
+      display: block;
+    }
+
+    .results-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: rgba(255,255,255,.92);
+    }
+
+    .results-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .item {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      text-align: left;
+    }
+
+    .item-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .item-name {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+
+    .item-price {
+      font-size: 28px;
+      font-weight: 900;
+      white-space: nowrap;
+      color: #ffe6a6;
+    }
+
+    .item-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,.82);
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .meta-card {
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .meta-label {
+      font-size: 12px;
+      color: rgba(255,255,255,.72);
+      margin-bottom: 4px;
+    }
+
+    .meta-value {
+      font-size: 18px;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .empty {
+      padding: 28px 18px;
+      text-align: center;
+      color: rgba(255,255,255,.86);
+      font-size: 18px;
+      background: rgba(255,255,255,.10);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .footer {
+      background: rgba(76,76,76,.94);
+      color: rgba(255,255,255,.78);
+      text-align: center;
+      padding: 24px 16px 32px;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .hero-title { font-size: 44px; }
+      .hero-sub { font-size: 22px; }
+      #searchInput { font-size: 28px; height: 66px; }
+      .search-row { grid-template-columns: 1fr auto auto auto; }
+    }
+
+    @media (max-width: 640px) {
+      .line-btn { width: 100%; font-size: 18px; }
+      .brand-title { font-size: 22px; }
+      .brand-sub { font-size: 12px; }
+      .hero { padding: 34px 14px 40px; align-items: flex-start; }
+      .hero-title { font-size: 32px; margin-top: 18px; }
+      .hero-sub { font-size: 18px; margin-bottom: 20px; }
+      .search-shell { padding: 8px 8px; }
+      .search-row { grid-template-columns: 1fr auto auto auto; gap: 6px; }
+      #searchInput { font-size: 20px; height: 56px; padding-left: 10px; }
+      .tool-btn { width: 48px; height: 48px; font-size: 20px; }
+      .tool-btn.search-btn { font-size: 22px; }
+      .filter-grid { grid-template-columns: 1fr; }
+      .item-top { flex-direction: column; }
+      .item-grid { grid-template-columns: 1fr; }
+      .footer { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top-strip">
+      <button class="line-btn">LINE 加入好友</button>
+    </div>
+
+    <div class="header">
+      <button class="menu-btn">☰</button>
+      <div class="brand">
+        <div class="brand-mark">G</div>
+        <div class="brand-text">
+          <div class="brand-title">生暉食材</div>
+          <div class="brand-sub">餐飲食材｜烘焙原料</div>
+        </div>
+      </div>
+      <button class="cart-btn">🛍️</button>
+    </div>
+
+    <div class="hero">
+      <div class="search-panel">
+        <div class="hero-title">搜尋商品</div>
+        <div class="hero-sub">快速查詢商品名稱 / 儲位 / 條碼</div>
+
+        <div class="search-shell">
+          <div class="search-row">
+            <div class="search-input-wrap">
+              <input id="searchInput" type="text" placeholder="Search..." autocomplete="off" enterkeyhint="search" />
+              <div id="suggestions" class="suggestions"></div>
+            </div>
+            <button id="filterBtn" class="tool-btn" title="篩選">⚲</button>
+            <button id="voiceBtn" class="tool-btn" title="語音">🎤</button>
+            <button id="scanBtn" class="tool-btn search-btn" title="掃碼 / 搜尋">⌕</button>
+          </div>
+        </div>
+
+        <div class="hint-row">
+          <div class="hint-chip">大框搜尋</div>
+          <div class="hint-chip">候選清單</div>
+          <div class="hint-chip">語音</div>
+          <div class="hint-chip">掃碼</div>
+          <div class="hint-chip">儲位 / 品名篩選</div>
+        </div>
+
+        <div id="filterPanel" class="filter-panel">
+          <div class="filter-title">篩選條件</div>
+          <div class="filter-grid">
+            <div class="field">
+              <label for="locationFilter">儲位篩選</label>
+              <select id="locationFilter">
+                <option value="">全部儲位</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="nameFilter">品名篩選</label>
+              <select id="nameFilter">
+                <option value="">全部品名</option>
+              </select>
+            </div>
+          </div>
+          <div class="panel-actions">
+            <button id="clearFilterBtn" class="small-btn secondary">清空條件</button>
+            <button id="applyFilterBtn" class="small-btn primary">套用篩選</button>
+          </div>
+        </div>
+
+        <div id="statusLine" class="status-line">可直接輸入、按麥克風語音搜尋，或按掃碼查條碼</div>
+
+        <div id="resultsWrap" class="results-wrap">
+          <div class="results-head">
+            <div><strong id="resultCount">0</strong> 筆結果</div>
+            <div id="resultHint">輸入關鍵字後即時搜尋</div>
+          </div>
+          <div id="results" class="results-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      2021@生暉商行<br />
+      電話:04 2463-5678<br />
+      407台中市西屯區福順路10號
+    </div>
+  </div>
+
+  <script>
+    const PRODUCTS_DATA = [
+      { id: 'A001', name: '龜甲萬鮮美露1L*6', price: 199, location: '12B0404', barcode: '471001100001', stock: 12 },
+      { id: 'A002', name: '龜甲萬職人薄鹽醬油', price: 345, location: '12A0502', barcode: '471001100002', stock: 5 },
+      { id: 'A003', name: '龜甲萬甘醇醬油特製', price: 125, location: '12B0301', barcode: '471001100003', stock: 64 },
+      { id: 'A004', name: '龜甲萬甘醇醬油非基改', price: 299, location: '12B0503', barcode: '471001100004', stock: 9 },
+      { id: 'A005', name: '龜甲萬甘醇醬油500cc', price: 60, location: '12B0202', barcode: '471001100005', stock: 86 },
+      { id: 'A006', name: '味島香鬆鰹節', price: 580, location: '5A0203', barcode: '471001100006', stock: 0 },
+      { id: 'A007', name: '高筋麵粉22公斤', price: 699, location: '3C0101', barcode: '471001100007', stock: 7 },
+      { id: 'A008', name: '低筋麵粉22公斤', price: 680, location: '3C0102', barcode: '471001100008', stock: 2 },
+      { id: 'A009', name: '砂糖細砂1公斤', price: 42, location: '2B0302', barcode: '471001100009', stock: 40 },
+      { id: 'A010', name: '無鹽奶油454g', price: 158, location: 'R40201', barcode: '471001100010', stock: 18 }
+    ];
+
+    const state = {
+      all: [],
+      filtered: [],
+      selectedSuggestionIndex: -1
+    };
+
+    const el = {
+      searchInput: document.getElementById('searchInput'),
+      suggestions: document.getElementById('suggestions'),
+      filterBtn: document.getElementById('filterBtn'),
+      voiceBtn: document.getElementById('voiceBtn'),
+      scanBtn: document.getElementById('scanBtn'),
+      filterPanel: document.getElementById('filterPanel'),
+      locationFilter: document.getElementById('locationFilter'),
+      nameFilter: document.getElementById('nameFilter'),
+      clearFilterBtn: document.getElementById('clearFilterBtn'),
+      applyFilterBtn: document.getElementById('applyFilterBtn'),
+      statusLine: document.getElementById('statusLine'),
+      resultsWrap: document.getElementById('resultsWrap'),
+      results: document.getElementById('results'),
+      resultCount: document.getElementById('resultCount'),
+      resultHint: document.getElementById('resultHint')
+    };
+
+    function normalizeText(text) {
+      return String(text || '').toLowerCase().trim().replace(/\s+/g, '');
+    }
+
+    function buildSearchText(item) {
+      return normalizeText([item.id, item.name, item.location, item.barcode, item.price].join(' '));
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function parseKeywords(text) {
+      return String(text || '').trim().split(/\s+/).map(v => normalizeText(v)).filter(Boolean);
+    }
+
+    function scoreItem(item, keywords) {
+      if (!keywords.length) return 0;
+      const name = normalizeText(item.name);
+      const location = normalizeText(item.location);
+      const barcode = normalizeText(item.barcode);
+      const id = normalizeText(item.id);
+      const all = item._searchText;
+      let score = 0;
+      for (const kw of keywords) {
+        if (barcode === kw) score += 100;
+        else if (id === kw) score += 90;
+        else if (name.startsWith(kw)) score += 50;
+        else if (name.includes(kw)) score += 35;
+        else if (location.includes(kw)) score += 25;
+        else if (all.includes(kw)) score += 10;
+      }
+      if (item.stock > 0) score += 2;
+      return score;
+    }
+
+    function getUniqueSortedValues(items, field) {
+      return [...new Set(items.map(v => v[field]).filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b), 'zh-Hant'));
+    }
+
+    function fillFilters() {
+      const locations = getUniqueSortedValues(state.all, 'location');
+      const names = getUniqueSortedValues(state.all, 'name');
+      el.locationFilter.innerHTML = '<option value="">全部儲位</option>' + locations.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+      el.nameFilter.innerHTML = '<option value="">全部品名</option>' + names.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+    }
+
+    function getSuggestions(inputText) {
+      const keywords = parseKeywords(inputText);
+      if (!keywords.length) return [];
+      return state.all
+        .map(item => ({ item, score: scoreItem(item, keywords) }))
+        .filter(v => v.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 8)
+        .map(v => v.item);
+    }
+
+    function renderSuggestions(list) {
+      if (!list.length) {
+        el.suggestions.style.display = 'none';
+        el.suggestions.innerHTML = '';
+        state.selectedSuggestionIndex = -1;
+        return;
+      }
+      el.suggestions.innerHTML = list.map((item, idx) => `
+        <div class="suggestion-item ${idx === state.selectedSuggestionIndex ? 'active' : ''}" data-id="${escapeHtml(item.id)}">
+          <div class="s-main">${escapeHtml(item.name)}</div>
+          <div class="s-sub">儲位：${escapeHtml(item.location)} ｜ 條碼：${escapeHtml(item.barcode || '')}</div>
+        </div>
+      `).join('');
+      el.suggestions.style.display = 'block';
+    }
+
+    function getFilteredItems() {
+      const keywords = parseKeywords(el.searchInput.value);
+      const locationValue = el.locationFilter.value;
+      const nameValue = el.nameFilter.value;
+      let list = state.all.filter(item => {
+        if (locationValue && item.location !== locationValue) return false;
+        if (nameValue && item.name !== nameValue) return false;
+        if (!keywords.length) return true;
+        return keywords.every(kw => item._searchText.includes(kw));
+      });
+      if (keywords.length) {
+        list = list
+          .map(item => ({ item, score: scoreItem(item, keywords) }))
+          .sort((a, b) => b.score - a.score || String(a.item.name).localeCompare(String(b.item.name), 'zh-Hant'))
+          .map(v => v.item);
+      }
+      return list.slice(0, 50);
+    }
+
+    function renderResults() {
+      const hasQuery = el.searchInput.value.trim() || el.locationFilter.value || el.nameFilter.value;
+      const items = getFilteredItems();
+      state.filtered = items;
+      el.resultsWrap.classList.toggle('show', !!hasQuery);
+      el.resultCount.textContent = items.length;
+      el.resultHint.textContent = items.length ? '已依關鍵字與條件篩選' : '沒有符合的商品';
+
+      if (!hasQuery) {
+        el.results.innerHTML = '';
+        return;
+      }
+
+      if (!items.length) {
+        el.results.innerHTML = '<div class="empty">沒有符合條件的商品</div>';
+        return;
+      }
+
+      el.results.innerHTML = items.map(item => `
+        <div class="item">
+          <div class="item-top">
+            <div>
+              <div class="item-name">${escapeHtml(item.name)}</div>
+              <div class="item-sub">貨號：${escapeHtml(item.id)} ｜ 條碼：${escapeHtml(item.barcode || '')}</div>
+            </div>
+            <div class="item-price">$${escapeHtml(item.price)}</div>
+          </div>
+          <div class="item-grid">
+            <div class="meta-card">
+              <div class="meta-label">儲位</div>
+              <div class="meta-value">${escapeHtml(item.location || '-')}</div>
+            </div>
+            <div class="meta-card">
+              <div class="meta-label">品名</div>
+              <div class="meta-value">${escapeHtml(item.name)}</div>
+            </div>
+            <div class="meta-card">
+              <div class="meta-label">庫存</div>
+              <div class="meta-value">${escapeHtml(item.stock)}</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateSuggestionsAndResults() {
+      const value = el.searchInput.value.trim();
+      if (!value) {
+        renderSuggestions([]);
+        renderResults();
+        return;
+      }
+      renderSuggestions(getSuggestions(value));
+      renderResults();
+    }
+
+    function clearFilters() {
+      el.locationFilter.value = '';
+      el.nameFilter.value = '';
+      renderResults();
+    }
+
+    function setupVoiceRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        el.statusLine.textContent = '此瀏覽器不支援頁面內建語音辨識，可直接用手機鍵盤語音輸入';
+        el.voiceBtn.addEventListener('click', () => el.searchInput.focus());
+        return;
+      }
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'zh-TW';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      el.voiceBtn.addEventListener('click', () => {
+        try {
+          recognition.start();
+          el.statusLine.textContent = '正在聽你說話…';
+          el.voiceBtn.classList.add('active');
+        } catch (err) {
+          el.statusLine.textContent = '語音啟動失敗，請直接用手機鍵盤語音輸入';
+        }
+      });
+
+      recognition.addEventListener('result', (event) => {
+        const transcript = event.results?.[0]?.[0]?.transcript || '';
+        el.searchInput.value = transcript.trim();
+        el.statusLine.textContent = `語音結果：${transcript}`;
+        updateSuggestionsAndResults();
+      });
+
+      recognition.addEventListener('end', () => {
+        el.voiceBtn.classList.remove('active');
+      });
+
+      recognition.addEventListener('error', () => {
+        el.statusLine.textContent = '語音辨識失敗，請再試一次';
+        el.voiceBtn.classList.remove('active');
+      });
+    }
+
+    function setupBarcodeScanner() {
+      let buffer = '';
+      let lastTime = 0;
+      document.addEventListener('keydown', (e) => {
+        const now = Date.now();
+        if (now - lastTime > 80) buffer = '';
+        lastTime = now;
+        if (e.key === 'Enter') {
+          if (buffer.length >= 6) {
+            el.searchInput.value = buffer;
+            el.statusLine.textContent = `已掃碼：${buffer}`;
+            updateSuggestionsAndResults();
+          }
+          buffer = '';
+          return;
+        }
+        if (/^[0-9A-Za-z]$/.test(e.key)) {
+          buffer += e.key;
+        }
+      });
+
+      el.scanBtn.addEventListener('click', () => {
+        const code = prompt('請掃條碼，或手動輸入條碼');
+        if (!code) return;
+        el.searchInput.value = String(code).trim();
+        el.statusLine.textContent = `已輸入條碼：${code}`;
+        updateSuggestionsAndResults();
+      });
+    }
+
+    function bindEvents() {
+      el.filterBtn.addEventListener('click', () => {
+        el.filterPanel.classList.toggle('open');
+      });
+
+      el.searchInput.addEventListener('input', updateSuggestionsAndResults);
+      el.searchInput.addEventListener('focus', updateSuggestionsAndResults);
+
+      el.searchInput.addEventListener('keydown', (e) => {
+        const list = getSuggestions(el.searchInput.value);
+        if (!list.length) return;
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          state.selectedSuggestionIndex = Math.min(state.selectedSuggestionIndex + 1, list.length - 1);
+          renderSuggestions(list);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          state.selectedSuggestionIndex = Math.max(state.selectedSuggestionIndex - 1, 0);
+          renderSuggestions(list);
+        } else if (e.key === 'Enter' && state.selectedSuggestionIndex >= 0) {
+          e.preventDefault();
+          const item = list[state.selectedSuggestionIndex];
+          if (item) {
+            el.searchInput.value = item.name;
+            renderSuggestions([]);
+            renderResults();
+          }
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        const suggestionItem = e.target.closest('.suggestion-item');
+        if (suggestionItem) {
+          const item = state.all.find(v => v.id === suggestionItem.dataset.id);
+          if (item) {
+            el.searchInput.value = item.name;
+            renderSuggestions([]);
+            renderResults();
+          }
+          return;
+        }
+        if (!e.target.closest('.search-input-wrap')) {
+          renderSuggestions([]);
+        }
+      });
+
+      el.applyFilterBtn.addEventListener('click', () => {
+        el.filterPanel.classList.remove('open');
+        renderResults();
+      });
+
+      el.locationFilter.addEventListener('change', renderResults);
+      el.nameFilter.addEventListener('change', renderResults);
+      el.clearFilterBtn.addEventListener('click', clearFilters);
+    }
+
+    function init() {
+      state.all = PRODUCTS_DATA.map(item => ({ ...item, _searchText: buildSearchText(item) }));
+      fillFilters();
+      bindEvents();
+      setupVoiceRecognition();
+      setupBarcodeScanner();
+    }
+
+    init();
+  </script>
+</body>
+</html>
