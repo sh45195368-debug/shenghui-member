@@ -3,835 +3,587 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>生暉食品營運｜客戶補貨系統</title>
+<title>客戶補貨系統</title>
 
 <style>
-  :root {
-    --bg: #f3f6f7;
-    --card: #ffffff;
-    --text: #2f5560;
-    --muted: #7b8b91;
-    --line: #d8e2e6;
-    --primary: #5f9eab;
-    --primary-dark: #4d8894;
-    --primary-soft: #eaf3f5;
-    --accent: #f26b3a;
-    --danger: #dc2626;
-    --success-bg: #ecfdf5;
-    --success-text: #166534;
-    --error-bg: #fef2f2;
-    --error-text: #991b1b;
-    --shadow: 0 6px 18px rgba(0,0,0,0.05);
-    --radius: 18px;
-  }
+:root{
+  --main:#5f9ea0;
+  --main-dark:#4f8b8d;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --danger:#dc2626;
+}
 
-  * { box-sizing: border-box; }
+body{
+  margin:0;
+  font-family:Arial,"Microsoft JhengHei",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: Arial, "Microsoft JhengHei", sans-serif;
-  }
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:16px;
+}
 
-  .container {
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 16px;
-  }
+.hero{
+  background:linear-gradient(135deg,#5f9ea0,#6faeb0);
+  color:white;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:16px;
+}
 
-  .hero {
-    background: linear-gradient(135deg, #5f9eab 0%, #78aeb9 100%);
-    color: #fff;
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: var(--shadow);
-  }
+.hero h1{
+  margin:0;
+  font-size:22px;
+}
 
-  .hero h1 {
-    margin: 0 0 8px;
-    font-size: 24px;
-  }
+.hero p{
+  margin-top:6px;
+  font-size:14px;
+  line-height:1.6;
+}
 
-  .hero p {
-    margin: 0;
-    color: rgba(255,255,255,0.92);
-    font-size: 14px;
-    line-height: 1.6;
-  }
+.card{
+  background:white;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.03);
+}
 
-  .card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 16px;
-    box-shadow: var(--shadow);
-    margin-bottom: 16px;
-  }
+h2{
+  margin:0 0 10px;
+  color:#325d66;
+}
 
-  .card h2 {
-    margin: 0 0 10px;
-    font-size: 18px;
-  }
+.btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+}
 
-  .sub {
-    color: var(--muted);
-    font-size: 13px;
-    margin-bottom: 12px;
-    line-height: 1.5;
-  }
+.btn-primary{
+  background:#111;
+  color:white;
+}
 
-  .history-btn,
-  .freq-btn,
-  .search-btn {
-    width: 100%;
-    border: 1px solid var(--line);
-    background: #fff;
-    border-radius: 14px;
-    padding: 12px;
-    text-align: left;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: 0.2s ease;
-    color: var(--text);
-  }
+.btn-primary:disabled{
+  background:#999;
+  cursor:not-allowed;
+}
 
-  .history-btn:hover,
-  .freq-btn:hover,
-  .search-btn:hover {
-    background: #f8fbfc;
-    border-color: #c7d7dc;
-  }
+.btn-secondary{
+  background:#eee;
+  color:#222;
+  margin-top:10px;
+}
 
-  .product-title,
-  .history-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 4px;
-    line-height: 1.45;
-  }
+.toggle-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+}
 
-  .meta {
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.55;
-  }
+.toggle-btn{
+  border:none;
+  background:#eef3f4;
+  color:#355d65;
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:14px;
+  cursor:pointer;
+}
 
-  .search-input,
-  .manual-input {
-    width: 100%;
-    padding: 14px;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    font-size: 16px;
-    outline: none;
-    color: var(--text);
-    margin-bottom: 10px;
-  }
+.item{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:10px;
+  background:#fff;
+}
 
-  .search-input:focus,
-  .manual-input:focus {
-    border-color: var(--primary);
-  }
+.item.clickable{
+  cursor:pointer;
+}
 
-  .toggle-wrap,
-  .today-order-head,
-  .manual-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
+.item.clickable:hover{
+  background:#f9fcfc;
+}
 
-  .today-order-box {
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 12px;
-    margin-bottom: 10px;
-    background: #fff;
-  }
+.product-title{
+  font-size:17px;
+  font-weight:700;
+  line-height:1.5;
+  color:#274a52;
+}
 
-  .today-order-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
+.small{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+  margin-top:4px;
+}
 
-  .today-order-items {
-    margin-top: 8px;
-    border-top: 1px dashed var(--line);
-    padding-top: 8px;
-  }
+input[type="text"]{
+  width:100%;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  font-size:16px;
+  box-sizing:border-box;
+}
 
-  .today-order-item {
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--text);
-  }
+.qty-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
 
-  .order-item {
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 12px;
-    margin-bottom: 10px;
-    background: #fff;
-  }
+.qty-input{
+  width:90px;
+  padding:8px;
+  font-size:16px;
+  border:1px solid var(--line);
+  border-radius:10px;
+}
 
-  .order-name {
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.45;
-    margin-bottom: 6px;
-  }
+.remove-btn{
+  border:none;
+  background:#f3f4f6;
+  border-radius:10px;
+  padding:8px 12px;
+  cursor:pointer;
+}
 
-  .order-meta {
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.5;
-    margin-bottom: 10px;
-  }
+.hidden{
+  display:none;
+}
 
-  .order-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
+.success{
+  background:#ecfdf5;
+  padding:12px;
+  border-radius:12px;
+  color:#166534;
+  margin-top:12px;
+}
 
-  .qty-input {
-    width: 100px;
-    padding: 10px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    font-size: 16px;
-  }
+.error{
+  background:#fef2f2;
+  padding:12px;
+  border-radius:12px;
+  color:#991b1b;
+  margin-top:12px;
+}
 
-  .unit-text {
-    color: var(--muted);
-    font-size: 14px;
-  }
+.loading{
+  color:var(--muted);
+  font-size:14px;
+  padding:8px 0;
+}
 
-  .remove-btn {
-    width: auto;
-    border: none;
-    background: #f3f4f6;
-    border-radius: 10px;
-    padding: 10px 12px;
-    cursor: pointer;
-    color: var(--text);
-    margin: 0;
-  }
-
-  .remove-btn:hover {
-    background: #e5e7eb;
-  }
-
-  .action-bar {
-    display: grid;
-    gap: 10px;
-    margin-top: 12px;
-  }
-
-  .btn {
-    border: none;
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  .btn-primary {
-    background: var(--primary);
-    color: #fff;
-  }
-
-  .btn-primary:hover {
-    background: var(--primary-dark);
-  }
-
-  .btn-primary:disabled {
-    background: #9ca3af;
-    cursor: not-allowed;
-  }
-
-  .btn-secondary {
-    background: #eef3f4;
-    color: var(--text);
-  }
-
-  .btn-secondary:hover {
-    background: #e3ecee;
-  }
-
-  .btn-accent {
-    background: var(--accent);
-    color: #fff;
-  }
-
-  .btn-accent:hover {
-    opacity: 0.92;
-  }
-
-  .message {
-    margin-top: 12px;
-    border-radius: 12px;
-    padding: 12px 14px;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  .success {
-    background: var(--success-bg);
-    color: var(--success-text);
-  }
-
-  .error {
-    background: var(--error-bg);
-    color: var(--error-text);
-  }
-
-  .empty {
-    color: var(--muted);
-    font-size: 14px;
-    padding: 10px 0;
-  }
-
-  .manual-area {
-    display: none;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px dashed var(--line);
-  }
-
-  .manual-area.show {
-    display: block;
-  }
+.empty{
+  color:var(--muted);
+  font-size:14px;
+  padding:8px 0;
+}
 </style>
 </head>
+
 <body>
-  <div class="container">
+<div class="container">
 
-    <div class="hero">
-      <h1>客戶補貨系統</h1>
-      <p>可直接複製最近訂單、加入常用商品、搜尋過去買過的商品，或手動新增未買過商品後送出補貨單。</p>
-    </div>
-
-    <div class="card">
-      <h2>客戶資料</h2>
-      <div id="customerInfo" class="sub">讀取中...</div>
-      <div class="sub" style="margin-bottom:0;">實際價格、庫存與交期以門市確認為準。</div>
-    </div>
-
-    <div class="card">
-      <h2>今日已送出訂單</h2>
-      <div class="sub">可查看今天已送出的內容，避免重複下單，也可直接複製為新訂單。</div>
-      <div id="todaySubmittedOrders">讀取中...</div>
-    </div>
-
-    <div class="card">
-      <h2>最近 5 筆訂單</h2>
-      <div class="sub">適合直接複製整張訂單後再微調。</div>
-      <div id="historyList">讀取中...</div>
-    </div>
-
-    <div class="card">
-      <div class="toggle-wrap">
-        <div>
-          <h2 style="margin-bottom:6px;">常用商品前20</h2>
-          <div class="sub" style="margin-bottom:0;">預設收合，點右側可展開。</div>
-        </div>
-        <button id="toggleFrequentBtn" class="btn btn-secondary" type="button" onclick="toggleFrequent()" style="width:auto;padding:10px 14px;">
-          展開
-        </button>
-      </div>
-
-      <div id="frequentList" style="margin-top:14px;"></div>
-    </div>
-
-    <div class="card">
-      <h2>商品搜尋</h2>
-      <div class="sub">只搜尋此客戶過去買過的商品。預設不顯示，輸入後才出現。</div>
-      <input
-        id="searchInput"
-        class="search-input"
-        type="text"
-        placeholder="輸入商品名稱或商品編號"
-        oninput="renderSearchResults()"
-      />
-      <div id="searchResultList" style="margin-top:12px;"></div>
-
-      <div class="manual-head" style="margin-top:12px;">
-        <div class="sub" style="margin:0;">找不到商品時，可手動新增。</div>
-        <button class="btn btn-secondary" type="button" onclick="toggleManualItemArea()" style="width:auto;padding:10px 14px;">
-          找不到商品？
-        </button>
-      </div>
-
-      <div id="manualItemArea" class="manual-area">
-        <input id="manualProductName" class="manual-input" type="text" placeholder="商品名稱，例如：發酵奶油" />
-        <input id="manualProductSpec" class="manual-input" type="text" placeholder="規格 / 備註，例如：1kg、25kg、紅蓋" />
-        <input id="manualProductQty" class="manual-input" type="number" min="1" step="1" placeholder="數量" />
-        <button class="btn btn-accent" type="button" onclick="addManualItem()">加入本次訂單</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>本次訂單</h2>
-      <div class="sub">可混合：最近訂單複製＋常用商品加入＋搜尋商品加入＋手動新增商品。</div>
-      <div id="currentOrder" class="empty">請先從上方加入商品</div>
-
-      <div class="action-bar">
-        <button id="submitBtn" class="btn btn-primary" onclick="submitOrder()" disabled>送出訂單</button>
-        <button class="btn btn-secondary" onclick="clearCurrentOrder()">清空本次訂單</button>
-      </div>
-
-      <div id="messageBox"></div>
-    </div>
-
+  <div class="hero">
+    <h1>客戶補貨系統</h1>
+    <p>可直接複製最近訂單、加入常用商品，或搜尋過去買過的商品後送出補貨單。</p>
   </div>
 
+  <div class="card">
+    <h2>客戶資料</h2>
+    <div id="customerInfo" class="loading">讀取中...</div>
+  </div>
+
+  <div class="card">
+    <h2>最近 5 筆訂單</h2>
+    <div id="history" class="loading">讀取中...</div>
+  </div>
+
+  <div class="card">
+    <div class="toggle-bar">
+      <div>
+        <h2 style="margin-bottom:4px;">常用商品前 20</h2>
+        <div class="small" style="margin-top:0;">預設收合，點展開再載入</div>
+      </div>
+      <button class="toggle-btn" type="button" onclick="toggleFrequent(event)">
+        <span id="frequentToggleText">展開</span>
+      </button>
+    </div>
+    <div id="frequent" class="hidden"></div>
+  </div>
+
+  <div class="card">
+    <h2>商品搜尋</h2>
+    <input id="search" type="text" placeholder="輸入商品名稱、商品編號" oninput="handleSearchInput()" />
+    <div id="searchResult" class="empty">請輸入商品名稱或商品編號</div>
+  </div>
+
+  <div class="card">
+    <h2>本次訂單</h2>
+    <div id="order" class="empty">請先從上方加入商品</div>
+
+    <button id="submitBtn" class="btn btn-primary" onclick="submitOrder()">送出訂單</button>
+    <button class="btn btn-secondary" onclick="clearOrder()">清空</button>
+
+    <div id="msg"></div>
+  </div>
+
+</div>
+
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbweZBWhONuIARJhGgVY2n-EPhxfWEb79akP3pM3r7D4ivg4n-4AZR79Inhxe_pzCSpO-A/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycby8DnCGGE4-36lIyDz8cZ6I0QUhJUMnID0Cqlelr6GX-CbVWEmGXCUiHC9njMSOmg4wnw/exec';
 
-  let token = '';
-  let customerId = '';
-  let customerName = '';
+let token = new URLSearchParams(location.search).get('token') || '';
+let customerId = '';
+let customerName = '';
 
-  let recentOrders = [];
-  let frequentItems = [];
-  let searchableItems = [];
-  let todaySubmittedOrders = [];
-  let currentItems = [];
+let current = [];
+let recent = [];
+let frequentData = [];
+let frequentLoaded = false;
+let frequentExpanded = false;
 
-  let frequentExpanded = false;
+let searchTimer = null;
 
-  function getTokenFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('token') || '';
+async function loadInit(){
+  if(!token){
+    document.getElementById('customerInfo').innerHTML = '<div class="error">網址缺少 token</div>';
+    document.getElementById('history').innerHTML = '';
+    return;
   }
 
-  async function loadDashboard() {
-    token = getTokenFromUrl();
+  try{
+    const res = await fetch(`${API_URL}?action=init&token=${encodeURIComponent(token)}`);
+    const data = await res.json();
 
-    if (!token) {
-      setError('網址缺少 token');
-      document.getElementById('customerInfo').textContent = '無法辨識客戶';
-      document.getElementById('todaySubmittedOrders').innerHTML = '<div class="empty">無法辨識客戶</div>';
+    if(!data.success){
+      document.getElementById('customerInfo').innerHTML = `<div class="error">${escapeHtml(data.message || '讀取失敗')}</div>`;
+      document.getElementById('history').innerHTML = '';
       return;
     }
 
-    try {
-      const res = await fetch(API_URL + '?action=dashboard&token=' + encodeURIComponent(token));
-      const data = await res.json();
+    customerId = data.customer_id;
+    customerName = data.customer_name;
+    recent = data.recent_orders || [];
 
-      if (!data.success) {
-        setError(data.message || '讀取失敗');
-        document.getElementById('customerInfo').textContent = '無法辨識客戶';
-        document.getElementById('todaySubmittedOrders').innerHTML = '<div class="empty">讀取失敗</div>';
-        return;
-      }
+    document.getElementById('customerInfo').textContent = `${customerName}（${customerId}）`;
 
-      customerId = data.customer_id || '';
-      customerName = data.customer_name || '';
-      recentOrders = data.recent_orders || [];
-      frequentItems = (data.frequent_items || []).slice(0, 20);
-      searchableItems = data.searchable_items || [];
-      todaySubmittedOrders = data.today_submitted_orders || [];
+    renderHistory();
+  }catch(err){
+    document.getElementById('customerInfo').innerHTML = `<div class="error">讀取失敗：${escapeHtml(err.message)}</div>`;
+    document.getElementById('history').innerHTML = '';
+  }
+}
 
-      document.getElementById('customerInfo').textContent = `${customerName}（${customerId}）`;
+function renderHistory(){
+  const el = document.getElementById('history');
 
-      renderTodaySubmittedOrders();
-      renderHistory();
-      renderFrequent();
-      renderSearchResults();
-      renderCurrentOrder();
-
-    } catch (err) {
-      setError('讀取資料失敗：' + err.message);
-      document.getElementById('todaySubmittedOrders').innerHTML = '<div class="empty">讀取失敗</div>';
-    }
+  if(!recent.length){
+    el.innerHTML = '<div class="empty">目前沒有最近訂單</div>';
+    return;
   }
 
-  function renderTodaySubmittedOrders() {
-    const el = document.getElementById('todaySubmittedOrders');
-
-    if (!todaySubmittedOrders.length) {
-      el.innerHTML = '<div class="empty">今天尚未送出訂單</div>';
-      return;
-    }
-
-    el.innerHTML = todaySubmittedOrders.map((order, index) => `
-      <div class="today-order-box">
-        <div class="today-order-head">
-          <div class="today-order-title">訂單編號：${escapeHtml(order.order_no)}</div>
-          <div class="meta">送出時間：${escapeHtml(order.submit_time)}</div>
-        </div>
-
-        <div style="margin-top:10px;">
-          <button
-            class="btn btn-secondary"
-            type="button"
-            onclick="copyTodaySubmittedOrder(${index})"
-            style="width:auto;padding:10px 14px;"
-          >
-            複製為新訂單
-          </button>
-        </div>
-
-        <div class="today-order-items">
-          ${order.items.map(item => `
-            <div class="today-order-item">
-              ${escapeHtml(item.product_name)}　${Number(item.qty)}　${escapeHtml(item.unit || '')}
-            </div>
-          `).join('')}
-        </div>
+  let html = '';
+  recent.forEach((o,i)=>{
+    html += `
+      <div class="item clickable" onclick="copyOrder(${i})">
+        <div class="product-title">${escapeHtml(o.order_date)}</div>
+        <div class="small">共 ${o.items.length} 項商品，點我直接複製</div>
       </div>
-    `).join('');
+    `;
+  });
+
+  el.innerHTML = html;
+}
+
+function copyOrder(i){
+  current = JSON.parse(JSON.stringify(recent[i].items || []));
+  merge();
+  renderOrder();
+  clearMsg();
+}
+
+async function toggleFrequent(evt){
+  if (evt) evt.stopPropagation();
+
+  frequentExpanded = !frequentExpanded;
+
+  const toggleText = document.getElementById('frequentToggleText');
+  const el = document.getElementById('frequent');
+
+  if(!frequentExpanded){
+    el.classList.add('hidden');
+    toggleText.textContent = '展開';
+    return;
   }
 
-  function copyTodaySubmittedOrder(index) {
-    const selected = todaySubmittedOrders[index];
-    if (!selected || !selected.items) return;
+  el.classList.remove('hidden');
+  toggleText.textContent = '收合';
 
-    currentItems = selected.items.map(item => ({
-      product_id: item.product_id || 'NEW',
-      product_name: item.product_name || '',
-      unit: item.unit || '',
-      qty: Number(item.qty) || 0
-    }));
-
-    mergeCurrentItems();
-    renderCurrentOrder();
-    clearMessage();
-
-    const orderArea = document.getElementById('currentOrder');
-    if (orderArea) {
-      orderArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
-
-  function renderHistory() {
-    const el = document.getElementById('historyList');
-
-    if (!recentOrders.length) {
-      el.innerHTML = '<div class="empty">目前沒有歷史訂單</div>';
-      return;
-    }
-
-    el.innerHTML = recentOrders.map((order, index) => `
-      <button class="history-btn" onclick="copyRecentOrder(${index})">
-        <div class="history-title">${escapeHtml(order.order_date)}</div>
-        <div class="meta">共 ${order.items.length} 項商品，點我直接複製</div>
-      </button>
-    `).join('');
-  }
-
-  function toggleFrequent() {
-    frequentExpanded = !frequentExpanded;
+  if(frequentLoaded){
     renderFrequent();
+    return;
   }
 
-  function renderFrequent() {
-    const el = document.getElementById('frequentList');
-    const btn = document.getElementById('toggleFrequentBtn');
+  el.innerHTML = '<div class="loading">載入中...</div>';
 
-    if (!frequentItems.length) {
-      el.innerHTML = '<div class="empty">目前沒有常用商品資料</div>';
-      btn.textContent = '展開';
+  try{
+    const res = await fetch(`${API_URL}?action=frequent&token=${encodeURIComponent(token)}`);
+    const data = await res.json();
+
+    if(!data.success){
+      el.innerHTML = `<div class="error">${escapeHtml(data.message || '讀取失敗')}</div>`;
       return;
     }
 
-    if (!frequentExpanded) {
-      el.innerHTML = '<div class="empty">已收合，點右上「展開」查看常用商品</div>';
-      btn.textContent = '展開';
+    frequentData = data.items || [];
+    frequentLoaded = true;
+    renderFrequent();
+  }catch(err){
+    el.innerHTML = `<div class="error">讀取失敗：${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function renderFrequent(){
+  const el = document.getElementById('frequent');
+
+  if(!frequentData.length){
+    el.innerHTML = '<div class="empty">目前沒有常用商品資料</div>';
+    return;
+  }
+
+  let html = '';
+  frequentData.forEach((p,i)=>{
+    html += `
+      <div class="item clickable" onclick="addItem('${escapeJs(p.product_id)}','${escapeJs(p.product_name)}','${escapeJs(p.unit)}')">
+        <div class="product-title">${i + 1}. ${escapeHtml(p.product_name)}</div>
+        <div class="small">商品編號：${escapeHtml(p.product_id)}｜單位：${escapeHtml(p.unit)}｜下單次數：${p.order_count}</div>
+      </div>
+    `;
+  });
+
+  el.innerHTML = html;
+}
+
+function handleSearchInput(){
+  clearTimeout(searchTimer);
+
+  const kw = document.getElementById('search').value.trim();
+
+  if(!kw){
+    document.getElementById('searchResult').innerHTML = '<div class="empty">請輸入商品名稱或商品編號</div>';
+    return;
+  }
+
+  document.getElementById('searchResult').innerHTML = '<div class="loading">搜尋中...</div>';
+
+  searchTimer = setTimeout(() => {
+    doSearch(kw);
+  }, 250);
+}
+
+async function doSearch(keyword){
+  try{
+    const res = await fetch(`${API_URL}?action=search&token=${encodeURIComponent(token)}&keyword=${encodeURIComponent(keyword)}`);
+    const data = await res.json();
+
+    if(!data.success){
+      document.getElementById('searchResult').innerHTML = `<div class="error">${escapeHtml(data.message || '搜尋失敗')}</div>`;
       return;
     }
 
-    btn.textContent = '收合';
+    const list = data.items || [];
 
-    el.innerHTML = frequentItems.map((item, index) => `
-      <button class="freq-btn" onclick="addFrequentItem(${index})">
-        <div class="product-title">${index + 1}. ${escapeHtml(item.product_name)}</div>
-        <div class="meta">
-          商品編號：${escapeHtml(item.product_id)}<br>
-          單位：${escapeHtml(item.unit)}｜下單次數：${Number(item.order_count || 0)}
+    if(!list.length){
+      document.getElementById('searchResult').innerHTML = '<div class="empty">查無符合商品</div>';
+      return;
+    }
+
+    let html = '';
+    list.forEach(p => {
+      html += `
+        <div class="item clickable" onclick="addItem('${escapeJs(p.product_id)}','${escapeJs(p.product_name)}','${escapeJs(p.unit)}')">
+          <div class="product-title">${escapeHtml(p.product_name)}</div>
+          <div class="small">商品編號：${escapeHtml(p.product_id)}｜單位：${escapeHtml(p.unit)}｜下單次數：${p.order_count}</div>
         </div>
-      </button>
-    `).join('');
-  }
-
-  function renderSearchResults() {
-    const keyword = (document.getElementById('searchInput').value || '').trim().toLowerCase();
-    const el = document.getElementById('searchResultList');
-
-    if (!keyword) {
-      el.innerHTML = '';
-      return;
-    }
-
-    let result = searchableItems.filter(item => {
-      return (
-        String(item.product_name || '').toLowerCase().includes(keyword) ||
-        String(item.product_id || '').toLowerCase().includes(keyword) ||
-        String(item.unit || '').toLowerCase().includes(keyword)
-      );
-    }).slice(0, 20);
-
-    if (!result.length) {
-      el.innerHTML = '<div class="empty">查無符合商品</div>';
-      return;
-    }
-
-    el.innerHTML = result.map(item => `
-      <button class="search-btn" onclick="addSearchItem('${escapeJs(item.product_id)}','${escapeJs(item.product_name)}','${escapeJs(item.unit)}')">
-        <div class="product-title">${escapeHtml(item.product_name)}</div>
-        <div class="meta">
-          商品編號：${escapeHtml(item.product_id)}<br>
-          單位：${escapeHtml(item.unit)}｜下單次數：${Number(item.order_count || 0)}
-        </div>
-      </button>
-    `).join('');
-  }
-
-  function toggleManualItemArea() {
-    const el = document.getElementById('manualItemArea');
-    el.classList.toggle('show');
-  }
-
-  function addManualItem() {
-    const name = (document.getElementById('manualProductName').value || '').trim();
-    const spec = (document.getElementById('manualProductSpec').value || '').trim();
-    const qty = Number(document.getElementById('manualProductQty').value || 0);
-
-    if (!name) {
-      setError('請輸入商品名稱');
-      return;
-    }
-
-    if (qty <= 0) {
-      setError('請輸入正確數量');
-      return;
-    }
-
-    currentItems.push({
-      product_id: 'NEW',
-      product_name: name,
-      unit: spec,
-      qty: qty
+      `;
     });
 
-    mergeCurrentItems();
-    renderCurrentOrder();
-    clearMessage();
-
-    document.getElementById('manualProductName').value = '';
-    document.getElementById('manualProductSpec').value = '';
-    document.getElementById('manualProductQty').value = '';
+    document.getElementById('searchResult').innerHTML = html;
+  }catch(err){
+    document.getElementById('searchResult').innerHTML = `<div class="error">搜尋失敗：${escapeHtml(err.message)}</div>`;
   }
+}
 
-  function copyRecentOrder(index) {
-    const selected = recentOrders[index];
-    if (!selected) return;
+function addItem(id,name,unit){
+  current.push({
+    product_id:id,
+    product_name:name,
+    unit:unit,
+    qty:1
+  });
 
-    currentItems = selected.items.map(item => ({
-      product_id: item.product_id,
-      product_name: item.product_name,
-      unit: item.unit,
-      qty: Number(item.qty) || 0
-    }));
+  merge();
+  renderOrder();
+  clearMsg();
+}
 
-    mergeCurrentItems();
-    renderCurrentOrder();
-    clearMessage();
-  }
+function merge(){
+  const map = {};
 
-  function addFrequentItem(index) {
-    const item = frequentItems[index];
-    if (!item) return;
-
-    currentItems.push({
-      product_id: item.product_id,
-      product_name: item.product_name,
-      unit: item.unit,
-      qty: 1
-    });
-
-    mergeCurrentItems();
-    renderCurrentOrder();
-    clearMessage();
-  }
-
-  function addSearchItem(productId, productName, unit) {
-    currentItems.push({
-      product_id: productId,
-      product_name: productName,
-      unit: unit,
-      qty: 1
-    });
-
-    mergeCurrentItems();
-    renderCurrentOrder();
-    clearMessage();
-  }
-
-  function mergeCurrentItems() {
-    const map = {};
-
-    currentItems.forEach(item => {
-      const safeUnit = item.unit || '';
-      const key = item.product_id + '||' + safeUnit + '||' + item.product_name;
-
-      if (!map[key]) {
-        map[key] = {
-          product_id: item.product_id,
-          product_name: item.product_name,
-          unit: safeUnit,
-          qty: 0
-        };
-      }
-
-      map[key].qty += Number(item.qty) || 0;
-    });
-
-    currentItems = Object.values(map).filter(item => item.qty > 0);
-  }
-
-  function renderCurrentOrder() {
-    const el = document.getElementById('currentOrder');
-    const btn = document.getElementById('submitBtn');
-
-    if (!currentItems.length) {
-      el.innerHTML = '<div class="empty">請先從上方加入商品</div>';
-      btn.disabled = true;
-      return;
+  current.forEach(i => {
+    const key = i.product_id + '||' + i.unit;
+    if(!map[key]){
+      map[key] = {
+        product_id:i.product_id,
+        product_name:i.product_name,
+        unit:i.unit,
+        qty:0
+      };
     }
+    map[key].qty += Number(i.qty) || 0;
+  });
 
-    el.innerHTML = currentItems.map((item, index) => `
-      <div class="order-item">
-        <div class="order-name">${escapeHtml(item.product_name)}</div>
-        <div class="order-meta">
-          商品編號：${escapeHtml(item.product_id)}<br>
-          規格 / 備註：${escapeHtml(item.unit || '')}
-        </div>
+  current = Object.values(map).filter(i => i.qty > 0);
+}
 
-        <div class="order-actions">
-          <input
-            class="qty-input"
-            type="number"
-            min="0"
-            step="1"
-            value="${Number(item.qty)}"
-            onchange="updateQty(${index}, this.value)"
-          />
-          <div class="unit-text">${escapeHtml(item.unit || '')}</div>
-          <button class="remove-btn" type="button" onclick="removeItem(${index})">刪除</button>
+function renderOrder(){
+  const el = document.getElementById('order');
+
+  if(!current.length){
+    el.innerHTML = '<div class="empty">請先從上方加入商品</div>';
+    return;
+  }
+
+  let html = '';
+
+  current.forEach((p,i)=>{
+    html += `
+      <div class="item">
+        <div class="product-title">${escapeHtml(p.product_name)}</div>
+        <div class="small">商品編號：${escapeHtml(p.product_id)}｜單位：${escapeHtml(p.unit)}</div>
+        <div class="qty-row">
+          <input class="qty-input" type="number" min="0" step="1" value="${p.qty}" onchange="changeQty(${i}, this.value)" />
+          <div>${escapeHtml(p.unit)}</div>
+          <button class="remove-btn" type="button" onclick="removeItem(${i})">刪除</button>
         </div>
       </div>
-    `).join('');
+    `;
+  });
 
+  el.innerHTML = html;
+}
+
+function changeQty(i,v){
+  current[i].qty = parseInt(v, 10) || 0;
+  current = current.filter(item => item.qty > 0);
+  renderOrder();
+}
+
+function removeItem(i){
+  current.splice(i,1);
+  renderOrder();
+}
+
+function clearOrder(){
+  current = [];
+  renderOrder();
+  clearMsg();
+}
+
+async function submitOrder(){
+  clearMsg();
+
+  const validItems = current.filter(i => Number(i.qty) > 0);
+
+  if(!validItems.length){
+    setError('請至少保留一項商品');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '送出中...';
+
+  try{
+    const res = await fetch(API_URL,{
+      method:'POST',
+      headers:{
+        'Content-Type':'text/plain;charset=utf-8'
+      },
+      body:JSON.stringify({
+        token:token,
+        items:validItems
+      })
+    });
+
+    const data = await res.json();
+
+    if(!data.success){
+      setError(data.message || '送出失敗');
+      return;
+    }
+
+    setSuccess(`送出成功，訂單編號：${data.order_no}`);
+    clearOrder();
+  }catch(err){
+    setError('送出失敗：' + err.message);
+  }finally{
     btn.disabled = false;
+    btn.textContent = '送出訂單';
   }
+}
 
-  function updateQty(index, value) {
-    const qty = Number(value);
-    currentItems[index].qty = isNaN(qty) ? 0 : qty;
-    currentItems = currentItems.filter(item => item.qty > 0);
-    renderCurrentOrder();
-  }
+function setSuccess(msg){
+  document.getElementById('msg').innerHTML = `<div class="success">${escapeHtml(msg)}</div>`;
+}
 
-  function removeItem(index) {
-    currentItems.splice(index, 1);
-    renderCurrentOrder();
-  }
+function setError(msg){
+  document.getElementById('msg').innerHTML = `<div class="error">${escapeHtml(msg)}</div>`;
+}
 
-  function clearCurrentOrder() {
-    currentItems = [];
-    renderCurrentOrder();
-    clearMessage();
-  }
+function clearMsg(){
+  document.getElementById('msg').innerHTML = '';
+}
 
-  async function submitOrder() {
-    clearMessage();
+function escapeHtml(str){
+  return String(str)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
 
-    const validItems = currentItems.filter(item => Number(item.qty) > 0);
+function escapeJs(str){
+  return String(str)
+    .replaceAll('\\','\\\\')
+    .replaceAll("'", "\\'")
+    .replaceAll('"', '\\"');
+}
 
-    if (!token) {
-      setError('缺少 token');
-      return;
-    }
-
-    if (!validItems.length) {
-      setError('請至少保留一項數量大於 0 的商品');
-      return;
-    }
-
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = '送出中...';
-
-    try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
-        body: JSON.stringify({
-          token: token,
-          items: validItems
-        })
-      });
-
-      const data = await res.json();
-
-      if (!data.success) {
-        setError(data.message || '送出失敗');
-        return;
-      }
-
-      setSuccess(`送出成功，訂單編號：${data.order_no}`);
-      clearCurrentOrder();
-      await loadDashboard();
-
-    } catch (err) {
-      setError('送出失敗：' + err.message);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = '送出訂單';
-    }
-  }
-
-  function setSuccess(msg) {
-    document.getElementById('messageBox').innerHTML =
-      `<div class="message success">${escapeHtml(msg)}</div>`;
-  }
-
-  function setError(msg) {
-    document.getElementById('messageBox').innerHTML =
-      `<div class="message error">${escapeHtml(msg)}</div>`;
-  }
-
-  function clearMessage() {
-    document.getElementById('messageBox').innerHTML = '';
-  }
-
-  function escapeHtml(str) {
-    return String(str)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-  }
-
-  function escapeJs(str) {
-    return String(str)
-      .replaceAll('\\', '\\\\')
-      .replaceAll("'", "\\'")
-      .replaceAll('"', '\\"');
-  }
-
-  loadDashboard();
+loadInit();
 </script>
 </body>
 </html>
