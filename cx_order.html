@@ -3,220 +3,428 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>客戶補貨系統</title>
+  <title>生暉食品營運｜客戶補貨系統</title>
   <style>
+    :root {
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --primary: #111827;
+      --primary-soft: #f3f4f6;
+      --accent: #16a34a;
+      --danger: #dc2626;
+      --shadow: 0 6px 20px rgba(0,0,0,0.06);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: Arial, "Microsoft JhengHei", sans-serif;
       margin: 0;
-      padding: 16px;
-      background: #f5f5f5;
-      color: #222;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
     }
-    .wrap {
-      max-width: 860px;
+
+    .container {
+      max-width: 980px;
       margin: 0 auto;
-    }
-    .card {
-      background: #fff;
-      border-radius: 12px;
       padding: 16px;
-      margin-bottom: 14px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
-    h1, h2 {
-      margin: 0 0 12px;
+
+    .hero {
+      background: linear-gradient(135deg, #111827 0%, #374151 100%);
+      color: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
     }
-    .muted {
-      color: #666;
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: rgba(255,255,255,0.85);
       font-size: 14px;
+      line-height: 1.6;
     }
-    .history-btn, .freq-btn {
-      display: block;
-      width: 100%;
-      text-align: left;
-      border: 1px solid #ddd;
-      background: #fff;
-      padding: 12px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      font-size: 15px;
-    }
-    .history-btn:hover, .freq-btn:hover {
-      background: #f9f9f9;
-    }
-    .freq-grid {
+
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .customer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .history-btn, .freq-btn, .search-btn {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: 0.2s ease;
+    }
+
+    .history-btn:hover, .freq-btn:hover, .search-btn:hover {
+      background: #fafafa;
+      border-color: #d1d5db;
+    }
+
+    .history-title, .product-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .freq-grid, .search-list {
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 10px;
     }
-    .item-row {
+
+    .search-box {
+      position: sticky;
+      top: 0;
+      background: var(--card);
+      padding-bottom: 10px;
+      z-index: 2;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #9ca3af;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 16px 0;
+    }
+
+    .order-list {
       display: grid;
-      grid-template-columns: 1fr 100px 70px 60px;
+      gap: 10px;
+    }
+
+    .order-item {
+      display: grid;
+      grid-template-columns: 1fr 96px 64px 70px;
       gap: 8px;
       align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
     }
-    .item-row:last-child {
-      border-bottom: none;
-    }
-    .item-name {
+
+    .order-name {
       font-size: 15px;
-      line-height: 1.4;
+      line-height: 1.45;
+      font-weight: 700;
     }
-    .unit, .small {
-      color: #666;
-      font-size: 13px;
+
+    .order-meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 400;
     }
-    input[type="number"] {
+
+    .qty-input {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
       font-size: 16px;
-      box-sizing: border-box;
+      text-align: center;
     }
-    .btn {
-      display: inline-block;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      cursor: pointer;
-      font-size: 16px;
+
+    .unit-text {
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
     }
-    .btn-primary {
-      background: #111;
-      color: #fff;
-      width: 100%;
-    }
-    .btn-danger {
-      background: #ef4444;
-      color: #fff;
-      width: 100%;
-      margin-top: 10px;
-    }
-    .btn-primary:disabled {
-      background: #999;
-      cursor: not-allowed;
-    }
-    .success {
-      background: #edf8ed;
-      color: #166534;
-      padding: 12px;
-      border-radius: 10px;
-      margin-top: 12px;
-    }
-    .error {
-      background: #fdecec;
-      color: #b91c1c;
-      padding: 12px;
-      border-radius: 10px;
-      margin-top: 12px;
-    }
-    .empty {
-      color: #666;
-      padding: 12px 0;
-    }
+
     .remove-btn {
       border: none;
-      background: #eee;
-      padding: 8px;
-      border-radius: 8px;
+      background: #f3f4f6;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 8px;
       cursor: pointer;
+      font-size: 13px;
+    }
+
+    .remove-btn:hover {
+      background: #e5e7eb;
+    }
+
+    .action-bar {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: var(--text);
+    }
+
+    .message {
+      margin-top: 12px;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .success {
+      background: #ecfdf5;
+      color: #166534;
+    }
+
+    .error {
+      background: #fef2f2;
+      color: #991b1b;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 14px;
+      padding: 10px 0;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .order-item {
+        grid-template-columns: 1fr 84px 56px;
+      }
+
+      .remove-wrap {
+        grid-column: 1 / -1;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
+  <div class="container">
+    <div class="hero">
       <h1>客戶補貨系統</h1>
-      <div id="customerInfo" class="muted">讀取中...</div>
+      <p>可直接複製最近訂單、加入常用商品，或搜尋過去買過的商品後送出補貨單。</p>
     </div>
 
     <div class="card">
-      <h2>最近 5 筆訂單</h2>
-      <div id="historyList">讀取中...</div>
+      <div class="customer-bar">
+        <div>
+          <h2 style="margin-bottom:6px;">客戶資料</h2>
+          <div id="customerInfo" class="sub">讀取中...</div>
+        </div>
+        <div class="badge">補貨專用</div>
+      </div>
     </div>
 
-    <div class="card">
-      <h2>常用商品前 30</h2>
-      <div id="frequentList">讀取中...</div>
-    </div>
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>最近 5 筆訂單</h2>
+          <div class="sub">適合直接複製整張訂單後再微調。</div>
+          <div id="historyList">讀取中...</div>
+        </div>
 
-    <div class="card">
-      <h2>本次訂單</h2>
-      <div id="currentOrder" class="empty">請先點選上方某一筆訂單複製，或從常用商品加入</div>
-      <button id="submitBtn" class="btn btn-primary" onclick="submitOrder()" disabled>送出訂單</button>
-      <button class="btn btn-danger" onclick="clearCurrentOrder()">清空本次訂單</button>
-      <div id="messageBox"></div>
+        <div class="card">
+          <h2>常用商品前 30</h2>
+          <div class="sub">適合補少量或臨時加幾樣。</div>
+          <div id="frequentList">讀取中...</div>
+        </div>
+
+        <div class="card">
+          <h2>搜尋商品</h2>
+          <div class="sub">只會顯示這位客戶過去買過的商品，避免選錯。</div>
+          <div class="search-box">
+            <input
+              id="searchInput"
+              class="search-input"
+              type="text"
+              placeholder="輸入商品名稱、商品編號"
+              oninput="renderSearchResults()"
+            />
+            <div class="small-note">可搜尋此客戶歷史購買商品池</div>
+          </div>
+          <div id="searchResultList" class="search-list"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h2>本次訂單</h2>
+          <div class="sub">可混合：最近訂單複製＋常用商品加入＋搜尋商品加入。</div>
+          <div id="currentOrder" class="empty">請先從左側加入商品</div>
+
+          <div class="action-bar">
+            <button id="submitBtn" class="btn btn-primary" onclick="submitOrder()" disabled>送出訂單</button>
+            <button class="btn btn-secondary" onclick="clearCurrentOrder()">清空本次訂單</button>
+          </div>
+
+          <div id="messageBox"></div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbxd1QNAqqavItWzGY35ko8mRWDoEgjDnnn--3PMv2PxqcpgX3m9eBuEJ-G7Xcat46mhDA/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzyQqJvxXYnNRLf9DLb_jFYaa_iR67V-Xs_GuNHCw4pol8-j8ueO0fOlXxzX52AKt0/exec';
 
     let token = '';
     let customerId = '';
     let customerName = '';
     let currentItems = [];
-    let historyOrders = [];
+    let recentOrders = [];
     let frequentItems = [];
+    let searchableItems = [];
 
     function getTokenFromUrl() {
       const params = new URLSearchParams(window.location.search);
       return params.get('token') || '';
     }
 
-    async function loadData() {
+    async function loadDashboard() {
       token = getTokenFromUrl();
 
       if (!token) {
-        showError('網址缺少 token');
+        setError('網址缺少 token');
         document.getElementById('customerInfo').textContent = '無法辨識客戶';
-        document.getElementById('historyList').innerHTML = '';
-        document.getElementById('frequentList').innerHTML = '';
         return;
       }
 
       try {
-        const url = `${API_URL}?action=history&token=${encodeURIComponent(token)}`;
+        const url = `${API_URL}?action=dashboard&token=${encodeURIComponent(token)}`;
         const res = await fetch(url);
         const data = await res.json();
 
         if (!data.success) {
-          showError(data.message || '讀取失敗');
+          setError(data.message || '讀取失敗');
           document.getElementById('customerInfo').textContent = '無法辨識客戶';
           return;
         }
 
         customerId = data.customer_id;
         customerName = data.customer_name;
-        historyOrders = data.orders || [];
+        recentOrders = data.recent_orders || [];
         frequentItems = data.frequent_items || [];
+        searchableItems = data.searchable_items || [];
 
-        document.getElementById('customerInfo').textContent =
-          `${customerName}（${customerId}）`;
+        document.getElementById('customerInfo').textContent = `${customerName}（${customerId}）`;
 
         renderHistory();
         renderFrequent();
+        renderSearchResults();
         renderCurrentOrder();
-
       } catch (err) {
-        showError('讀取資料失敗：' + err.message);
+        setError('讀取資料失敗：' + err.message);
       }
     }
 
     function renderHistory() {
       const el = document.getElementById('historyList');
 
-      if (!historyOrders.length) {
+      if (!recentOrders.length) {
         el.innerHTML = '<div class="empty">目前沒有歷史訂單</div>';
         return;
       }
 
-      el.innerHTML = historyOrders.map((order, index) => `
-        <button class="history-btn" onclick="copyHistoryOrder(${index})">
-          <div><strong>${order.order_date}</strong></div>
-          <div class="muted">共 ${order.items.length} 項，點我直接複製</div>
+      el.innerHTML = recentOrders.map((order, index) => `
+        <button class="history-btn" onclick="copyRecentOrder(${index})">
+          <div class="history-title">${order.order_date}</div>
+          <div class="meta">共 ${order.items.length} 項商品，點我直接複製</div>
         </button>
       `).join('');
     }
@@ -231,15 +439,51 @@
 
       el.innerHTML = `<div class="freq-grid">` + frequentItems.map((item, index) => `
         <button class="freq-btn" onclick="addFrequentItem(${index})">
-          <div><strong>${escapeHtml(item.product_name)}</strong></div>
-          <div class="small">商品編號：${escapeHtml(item.product_id)}</div>
-          <div class="small">單位：${escapeHtml(item.unit)}｜下單次數：${item.order_count}</div>
+          <div class="product-title">${escapeHtml(item.product_name)}</div>
+          <div class="meta">
+            商品編號：${escapeHtml(item.product_id)}<br>
+            單位：${escapeHtml(item.unit)}｜下單次數：${item.order_count}
+          </div>
         </button>
       `).join('') + `</div>`;
     }
 
-    function copyHistoryOrder(index) {
-      const selected = historyOrders[index];
+    function renderSearchResults() {
+      const keyword = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const el = document.getElementById('searchResultList');
+
+      let result = searchableItems;
+
+      if (keyword) {
+        result = searchableItems.filter(item => {
+          return (
+            String(item.product_name).toLowerCase().includes(keyword) ||
+            String(item.product_id).toLowerCase().includes(keyword) ||
+            String(item.unit).toLowerCase().includes(keyword)
+          );
+        });
+      }
+
+      result = result.slice(0, 30);
+
+      if (!result.length) {
+        el.innerHTML = '<div class="empty">查無符合商品</div>';
+        return;
+      }
+
+      el.innerHTML = result.map((item, index) => `
+        <button class="search-btn" onclick="addSearchItem('${escapeJs(item.product_id)}','${escapeJs(item.product_name)}','${escapeJs(item.unit)}')">
+          <div class="product-title">${escapeHtml(item.product_name)}</div>
+          <div class="meta">
+            商品編號：${escapeHtml(item.product_id)}<br>
+            單位：${escapeHtml(item.unit)}｜下單次數：${item.order_count}
+          </div>
+        </button>
+      `).join('');
+    }
+
+    function copyRecentOrder(index) {
+      const selected = recentOrders[index];
       if (!selected) return;
 
       currentItems = selected.items.map(item => ({
@@ -262,6 +506,19 @@
         product_id: item.product_id,
         product_name: item.product_name,
         unit: item.unit,
+        qty: 1
+      });
+
+      mergeCurrentItems();
+      renderCurrentOrder();
+      clearMessage();
+    }
+
+    function addSearchItem(productId, productName, unit) {
+      currentItems.push({
+        product_id: productId,
+        product_name: productName,
+        unit: unit,
         qty: 1
       });
 
@@ -294,26 +551,43 @@
       const btn = document.getElementById('submitBtn');
 
       if (!currentItems.length) {
-        el.innerHTML = '<div class="empty">請先點選上方某一筆訂單複製，或從常用商品加入</div>';
+        el.innerHTML = '<div class="empty">請先從左側加入商品</div>';
         btn.disabled = true;
         return;
       }
 
-      el.innerHTML = currentItems.map((item, index) => `
-        <div class="item-row">
-          <div class="item-name">
-            <div>${escapeHtml(item.product_name)}</div>
-            <div class="unit">商品編號：${escapeHtml(item.product_id)}｜單位：${escapeHtml(item.unit)}</div>
-          </div>
-          <div>
-            <input type="number" min="0" step="1" value="${item.qty}" onchange="updateQty(${index}, this.value)" />
-          </div>
-          <div>${escapeHtml(item.unit)}</div>
-          <div>
-            <button class="remove-btn" onclick="removeItem(${index})">刪除</button>
-          </div>
+      el.innerHTML = `
+        <div class="order-list">
+          ${currentItems.map((item, index) => `
+            <div class="order-item">
+              <div>
+                <div class="order-name">${escapeHtml(item.product_name)}</div>
+                <div class="order-meta">
+                  商品編號：${escapeHtml(item.product_id)}<br>
+                  單位：${escapeHtml(item.unit)}
+                </div>
+              </div>
+
+              <div>
+                <input
+                  class="qty-input"
+                  type="number"
+                  min="0"
+                  step="1"
+                  value="${item.qty}"
+                  onchange="updateQty(${index}, this.value)"
+                />
+              </div>
+
+              <div class="unit-text">${escapeHtml(item.unit)}</div>
+
+              <div class="remove-wrap">
+                <button class="remove-btn" onclick="removeItem(${index})">刪除</button>
+              </div>
+            </div>
+          `).join('')}
         </div>
-      `).join('');
+      `;
 
       btn.disabled = false;
     }
@@ -339,15 +613,15 @@
     async function submitOrder() {
       clearMessage();
 
+      const validItems = currentItems.filter(item => Number(item.qty) > 0);
+
       if (!token) {
-        showError('缺少 token');
+        setError('缺少 token');
         return;
       }
 
-      const validItems = currentItems.filter(item => Number(item.qty) > 0);
-
       if (!validItems.length) {
-        showError('請至少保留一項數量大於 0 的商品');
+        setError('請至少保留一項數量大於 0 的商品');
         return;
       }
 
@@ -370,28 +644,28 @@
         const data = await res.json();
 
         if (!data.success) {
-          showError(data.message || '送出失敗');
+          setError(data.message || '送出失敗');
           return;
         }
 
-        showSuccess(`送出成功，訂單編號：${data.order_no}`);
+        setSuccess(`送出成功，訂單編號：${data.order_no}`);
         clearCurrentOrder();
       } catch (err) {
-        showError('送出失敗：' + err.message);
+        setError('送出失敗：' + err.message);
       } finally {
         btn.disabled = false;
         btn.textContent = '送出訂單';
       }
     }
 
-    function showSuccess(msg) {
+    function setSuccess(msg) {
       document.getElementById('messageBox').innerHTML =
-        `<div class="success">${escapeHtml(msg)}</div>`;
+        `<div class="message success">${escapeHtml(msg)}</div>`;
     }
 
-    function showError(msg) {
+    function setError(msg) {
       document.getElementById('messageBox').innerHTML =
-        `<div class="error">${escapeHtml(msg)}</div>`;
+        `<div class="message error">${escapeHtml(msg)}</div>`;
     }
 
     function clearMessage() {
@@ -407,7 +681,14 @@
         .replaceAll("'", '&#039;');
     }
 
-    loadData();
+    function escapeJs(str) {
+      return String(str)
+        .replaceAll('\\', '\\\\')
+        .replaceAll("'", "\\'")
+        .replaceAll('"', '\\"');
+    }
+
+    loadDashboard();
   </script>
 </body>
 </html>
