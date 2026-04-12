@@ -439,7 +439,8 @@
 
       el.innerHTML = `<div class="freq-grid">` + frequentItems.map((item, index) => `
         <button class="freq-btn" onclick="addFrequentItem(${index})">
-          <div class="product-title">${escapeHtml(item.product_name)}</div>
+          <div class="product-title"> ${index + 1}. ${escapeHtml(item.product_name)}
+</div>
           <div class="meta">
             商品編號：${escapeHtml(item.product_id)}<br>
             單位：${escapeHtml(item.unit)}｜下單次數：${item.order_count}
