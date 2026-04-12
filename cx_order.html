@@ -3,319 +3,681 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>客戶補貨系統</title>
+<title>生暉食品營運｜客戶補貨系統</title>
 
 <style>
-:root{
-  --main:#5f9ea0;
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --text:#1f2937;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-  --danger:#dc2626;
-}
+  :root {
+    --bg: #f3f6f7;
+    --card: #ffffff;
+    --text: #2f5560;
+    --muted: #7b8b91;
+    --line: #d8e2e6;
+    --primary: #5f9eab;
+    --primary-dark: #4d8894;
+    --primary-soft: #eaf3f5;
+    --accent: #f26b3a;
+    --danger: #dc2626;
+    --success-bg: #ecfdf5;
+    --success-text: #166534;
+    --error-bg: #fef2f2;
+    --error-text: #991b1b;
+    --shadow: 0 6px 18px rgba(0,0,0,0.05);
+    --radius: 18px;
+  }
 
-body{
-  margin:0;
-  font-family:Arial,"Microsoft JhengHei";
-  background:var(--bg);
-}
+  * {
+    box-sizing: border-box;
+  }
 
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:16px;
-}
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, "Microsoft JhengHei", sans-serif;
+  }
 
-/* 🔥 Header */
-.hero{
-  background:linear-gradient(135deg,#5f9ea0,#6faeb0);
-  color:white;
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:16px;
-}
+  .container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 16px;
+  }
 
-.hero h1{
-  margin:0;
-  font-size:22px;
-}
+  .hero {
+    background: linear-gradient(135deg, #5f9eab 0%, #78aeb9 100%);
+    color: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
 
-.hero p{
-  margin-top:6px;
-  font-size:14px;
-}
+  .hero h1 {
+    margin: 0 0 8px;
+    font-size: 24px;
+  }
 
-/* 卡片 */
-.card{
-  background:white;
-  border-radius:16px;
-  padding:16px;
-  margin-bottom:14px;
-}
+  .hero p {
+    margin: 0;
+    color: rgba(255,255,255,0.92);
+    font-size: 14px;
+    line-height: 1.6;
+  }
 
-/* 標題 */
-h2{
-  margin:0 0 10px;
-}
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
 
-/* 按鈕 */
-.btn{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  font-size:16px;
-}
+  .card h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+  }
 
-.btn-primary{
-  background:#111;
-  color:white;
-}
+  .sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
 
-.btn-secondary{
-  background:#eee;
-}
+  .row-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
 
-/* 🔥 收合 */
-.toggle{
-  cursor:pointer;
-  font-weight:bold;
-}
+  .history-btn,
+  .freq-btn,
+  .search-btn {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 14px;
+    padding: 12px;
+    text-align: left;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: 0.2s ease;
+    color: var(--text);
+  }
 
-/* 🔥 商品卡 */
-.item{
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:10px;
-  margin-bottom:10px;
-}
+  .history-btn:hover,
+  .freq-btn:hover,
+  .search-btn:hover {
+    background: #f8fbfc;
+    border-color: #c7d7dc;
+  }
 
-.small{
-  color:var(--muted);
-  font-size:12px;
-}
+  .product-title,
+  .history-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    line-height: 1.45;
+  }
 
-input{
-  width:80px;
-  padding:6px;
-  font-size:16px;
-}
+  .meta {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+  }
 
-.hidden{
-  display:none;
-}
+  .search-input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    font-size: 16px;
+    outline: none;
+    color: var(--text);
+  }
 
-.success{
-  background:#ecfdf5;
-  padding:10px;
-  border-radius:10px;
-}
+  .search-input:focus {
+    border-color: var(--primary);
+  }
 
-.error{
-  background:#fef2f2;
-  padding:10px;
-  border-radius:10px;
-}
+  .order-item {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #fff;
+  }
 
+  .order-name {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.45;
+    margin-bottom: 6px;
+  }
+
+  .order-meta {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  .order-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .qty-input {
+    width: 100px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 16px;
+  }
+
+  .unit-text {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .remove-btn {
+    width: auto;
+    border: none;
+    background: #f3f4f6;
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .remove-btn:hover {
+    background: #e5e7eb;
+  }
+
+  .action-bar {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-dark);
+  }
+
+  .btn-primary:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background: #eef3f4;
+    color: var(--text);
+  }
+
+  .btn-secondary:hover {
+    background: #e3ecee;
+  }
+
+  .message {
+    margin-top: 12px;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .success {
+    background: var(--success-bg);
+    color: var(--success-text);
+  }
+
+  .error {
+    background: var(--error-bg);
+    color: var(--error-text);
+  }
+
+  .empty {
+    color: var(--muted);
+    font-size: 14px;
+    padding: 10px 0;
+  }
+
+  .toggle-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 640px) {
+    .hero h1 {
+      font-size: 22px;
+    }
+
+    .qty-input {
+      width: 88px;
+    }
+  }
 </style>
 </head>
-
 <body>
+  <div class="container">
 
-<div class="container">
+    <div class="hero">
+      <h1>客戶補貨系統</h1>
+      <p>可直接複製最近訂單、加入常用商品，或搜尋過去買過的商品後送出補貨單。</p>
+    </div>
 
-<div class="hero">
-<h1>客戶補貨系統</h1>
-<p>可複製訂單、補常用商品或搜尋商品後送出</p>
-</div>
+    <div class="card">
+      <h2>客戶資料</h2>
+      <div id="customerInfo" class="sub">讀取中...</div>
+    </div>
 
-<div class="card">
-<h2>客戶資料</h2>
-<div id="customerInfo">讀取中...</div>
-</div>
+    <div class="card">
+      <h2>最近 5 筆訂單</h2>
+      <div class="sub">適合直接複製整張訂單後再微調。</div>
+      <div id="historyList">讀取中...</div>
+    </div>
 
-<!-- 最近訂單 -->
-<div class="card">
-<h2>最近5筆訂單</h2>
-  <div class="sub">適合直接複製整張訂單後再微調。</div>
-<div id="history"></div>
-</div>
+    <div class="card">
+      <div class="toggle-wrap">
+        <div>
+          <h2 style="margin-bottom:6px;">常用商品前20</h2>
+          <div class="sub" style="margin-bottom:0;">預設收合，點右側可展開。</div>
+        </div>
+        <button id="toggleFrequentBtn" class="btn btn-secondary" type="button" onclick="toggleFrequent()" style="width:auto;padding:10px 14px;">
+          展開
+        </button>
+      </div>
 
-<!-- 常用商品（收合） -->
-<div class="card">
-<div class="toggle" onclick="toggleFrequent()">
-常用商品前20 ▼
-</div>
-<div id="frequent" class="hidden"></div>
-</div>
+      <div id="frequentList" style="margin-top:14px;"></div>
+    </div>
 
-<!-- 搜尋（預設空） -->
-<div class="card">
-<h2>商品搜尋</h2>
-<input id="search" placeholder="輸入商品" oninput="renderSearch()" />
-<div id="searchResult"></div>
-</div>
+    <div class="card">
+      <h2>商品搜尋</h2>
+      <div class="sub">只搜尋此客戶過去買過的商品。預設不顯示，輸入後才出現。</div>
+      <input
+        id="searchInput"
+        class="search-input"
+        type="text"
+        placeholder="輸入商品名稱或商品編號"
+        oninput="renderSearchResults()"
+      />
+      <div id="searchResultList" style="margin-top:12px;"></div>
+    </div>
 
-<!-- 訂單 -->
-<div class="card">
-<h2>本次訂單</h2>
-<div id="order"></div>
+    <div class="card">
+      <h2>本次訂單</h2>
+      <div class="sub">可混合：最近訂單複製＋常用商品加入＋搜尋商品加入。</div>
+      <div id="currentOrder" class="empty">請先從上方加入商品</div>
 
-<button class="btn btn-primary" onclick="submitOrder()">送出訂單</button>
-<button class="btn btn-secondary" onclick="clearOrder()">清空</button>
+      <div class="action-bar">
+        <button id="submitBtn" class="btn btn-primary" onclick="submitOrder()" disabled>送出訂單</button>
+        <button class="btn btn-secondary" onclick="clearCurrentOrder()">清空本次訂單</button>
+      </div>
 
-<div id="msg"></div>
-</div>
+      <div id="messageBox"></div>
+    </div>
 
-</div>
+  </div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbyaXNyIXqADwF1JjKJPI12gLbHCL9ZmQSVyATwDlRnlvx5hqsdQi1OYNMSfRDiWsTeSxQ/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyaXNyIXqADwF1JjKJPI12gLbHCL9ZmQSVyATwDlRnlvx5hqsdQi1OYNMSfRDiWsTeSxQ/exec';
 
-let token = new URLSearchParams(location.search).get('token');
-let current = [];
-let frequentData = [];
-let searchPool = [];
-let recent = [];
+  let token = '';
+  let customerId = '';
+  let customerName = '';
 
-async function load(){
-  let res = await fetch(API_URL+"?action=dashboard&token="+token);
-  let data = await res.json();
+  let recentOrders = [];
+  let frequentItems = [];
+  let searchableItems = [];
+  let currentItems = [];
 
-  document.getElementById('customerInfo').innerText =
-    data.customer_name+" ("+data.customer_id+")";
+  let frequentExpanded = false;
 
-  recent = data.recent_orders;
-  frequentData = data.frequent_items;
-  searchPool = data.searchable_items;
+  function getTokenFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('token') || '';
+  }
 
-  renderHistory();
-}
+  async function loadDashboard() {
+    token = getTokenFromUrl();
 
-function renderHistory(){
-  let html="";
-  recent.forEach((o,i)=>{
-    html+=`
-    <div class="item" onclick="copyOrder(${i})">
-    ${o.order_date}（${o.items.length}項）
-    </div>`;
-  });
-  document.getElementById('history').innerHTML=html;
-}
+    if (!token) {
+      setError('網址缺少 token');
+      document.getElementById('customerInfo').textContent = '無法辨識客戶';
+      return;
+    }
 
-function copyOrder(i){
-  current = JSON.parse(JSON.stringify(recent[i].items));
-  renderOrder();
-}
+    try {
+      const res = await fetch(API_URL + '?action=dashboard&token=' + encodeURIComponent(token));
+      const data = await res.json();
 
-function toggleFrequent(){
-  let el=document.getElementById('frequent');
-  if(el.classList.contains('hidden')){
-    el.classList.remove('hidden');
+      if (!data.success) {
+        setError(data.message || '讀取失敗');
+        document.getElementById('customerInfo').textContent = '無法辨識客戶';
+        return;
+      }
+
+      customerId = data.customer_id || '';
+      customerName = data.customer_name || '';
+      recentOrders = data.recent_orders || [];
+      frequentItems = (data.frequent_items || []).slice(0, 20);
+      searchableItems = data.searchable_items || [];
+
+      document.getElementById('customerInfo').textContent = `${customerName}（${customerId}）`;
+
+      renderHistory();
+      renderFrequent();
+      renderSearchResults();
+      renderCurrentOrder();
+
+    } catch (err) {
+      setError('讀取資料失敗：' + err.message);
+    }
+  }
+
+  function renderHistory() {
+    const el = document.getElementById('historyList');
+
+    if (!recentOrders.length) {
+      el.innerHTML = '<div class="empty">目前沒有歷史訂單</div>';
+      return;
+    }
+
+    el.innerHTML = recentOrders.map((order, index) => `
+      <button class="history-btn" onclick="copyRecentOrder(${index})">
+        <div class="history-title">${escapeHtml(order.order_date)}</div>
+        <div class="meta">共 ${order.items.length} 項商品，點我直接複製</div>
+      </button>
+    `).join('');
+  }
+
+  function toggleFrequent() {
+    frequentExpanded = !frequentExpanded;
     renderFrequent();
-  }else{
-    el.classList.add('hidden');
-  }
-}
-
-function renderFrequent(){
-  let html="";
-  frequentData.forEach((p,i)=>{
-    html+=`
-    <div class="item" onclick="addItem('${p.product_id}','${p.product_name}','${p.unit}')">
-    ${i+1}. ${p.product_name}
-    <div class="small">${p.unit}</div>
-    </div>`;
-  });
-  document.getElementById('frequent').innerHTML=html;
-}
-
-function renderSearch(){
-  let kw=document.getElementById('search').value.toLowerCase();
-  if(!kw){
-    document.getElementById('searchResult').innerHTML="";
-    return;
   }
 
-  let list=searchPool.filter(p=>
-    p.product_name.toLowerCase().includes(kw)
-  ).slice(0,20);
+  function renderFrequent() {
+    const el = document.getElementById('frequentList');
+    const btn = document.getElementById('toggleFrequentBtn');
 
-  let html="";
-  list.forEach(p=>{
-    html+=`
-    <div class="item" onclick="addItem('${p.product_id}','${p.product_name}','${p.unit}')">
-    ${p.product_name}
-    <div class="small">${p.unit}</div>
-    </div>`;
-  });
+    if (!frequentItems.length) {
+      el.innerHTML = '<div class="empty">目前沒有常用商品資料</div>';
+      btn.textContent = '展開';
+      return;
+    }
 
-  document.getElementById('searchResult').innerHTML=html;
-}
+    if (!frequentExpanded) {
+      el.innerHTML = '<div class="empty">已收合，點右上「展開」查看常用商品</div>';
+      btn.textContent = '展開';
+      return;
+    }
 
-function addItem(id,name,unit){
-  current.push({product_id:id,product_name:name,unit:unit,qty:1});
-  merge();
-  renderOrder();
-}
+    btn.textContent = '收合';
 
-function merge(){
-  let map={};
-  current.forEach(i=>{
-    let k=i.product_id+i.unit;
-    if(!map[k]) map[k]=i;
-    else map[k].qty+=i.qty;
-  });
-  current=Object.values(map);
-}
+    el.innerHTML = frequentItems.map((item, index) => `
+      <button class="freq-btn" onclick="addFrequentItem(${index})">
+        <div class="product-title">${index + 1}. ${escapeHtml(item.product_name)}</div>
+        <div class="meta">
+          商品編號：${escapeHtml(item.product_id)}<br>
+          單位：${escapeHtml(item.unit)}｜下單次數：${Number(item.order_count || 0)}
+        </div>
+      </button>
+    `).join('');
+  }
 
-function renderOrder(){
-  let html="";
-  current.forEach((p,i)=>{
-    html+=`
-    <div class="item">
-    ${p.product_name}
-    <br>
-    <input value="${p.qty}" onchange="changeQty(${i},this.value)" />
-    ${p.unit}
-    <button onclick="remove(${i})">刪</button>
-    </div>`;
-  });
-  document.getElementById('order').innerHTML=html;
-}
+  function renderSearchResults() {
+    const keyword = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+    const el = document.getElementById('searchResultList');
 
-function changeQty(i,v){
-  current[i].qty=parseInt(v)||0;
-}
+    if (!keyword) {
+      el.innerHTML = '';
+      return;
+    }
 
-function remove(i){
-  current.splice(i,1);
-  renderOrder();
-}
+    let result = searchableItems.filter(item => {
+      return (
+        String(item.product_name || '').toLowerCase().includes(keyword) ||
+        String(item.product_id || '').toLowerCase().includes(keyword) ||
+        String(item.unit || '').toLowerCase().includes(keyword)
+      );
+    }).slice(0, 20);
 
-function clearOrder(){
-  current=[];
-  renderOrder();
-}
+    if (!result.length) {
+      el.innerHTML = '<div class="empty">查無符合商品</div>';
+      return;
+    }
 
-async function submitOrder(){
-  let res = await fetch(API_URL,{
-    method:'POST',
-    body:JSON.stringify({
-      token:token,
-      items:current
-    })
-  });
-  let data = await res.json();
+    el.innerHTML = result.map(item => `
+      <button class="search-btn" onclick="addSearchItem('${escapeJs(item.product_id)}','${escapeJs(item.product_name)}','${escapeJs(item.unit)}')">
+        <div class="product-title">${escapeHtml(item.product_name)}</div>
+        <div class="meta">
+          商品編號：${escapeHtml(item.product_id)}<br>
+          單位：${escapeHtml(item.unit)}｜下單次數：${Number(item.order_count || 0)}
+        </div>
+      </button>
+    `).join('');
+  }
 
-  document.getElementById('msg').innerHTML =
-    `<div class="success">送出成功</div>`;
-}
+  function copyRecentOrder(index) {
+    const selected = recentOrders[index];
+    if (!selected) return;
 
-load();
+    currentItems = selected.items.map(item => ({
+      product_id: item.product_id,
+      product_name: item.product_name,
+      unit: item.unit,
+      qty: Number(item.qty) || 0
+    }));
+
+    mergeCurrentItems();
+    renderCurrentOrder();
+    clearMessage();
+  }
+
+  function addFrequentItem(index) {
+    const item = frequentItems[index];
+    if (!item) return;
+
+    currentItems.push({
+      product_id: item.product_id,
+      product_name: item.product_name,
+      unit: item.unit,
+      qty: 1
+    });
+
+    mergeCurrentItems();
+    renderCurrentOrder();
+    clearMessage();
+  }
+
+  function addSearchItem(productId, productName, unit) {
+    currentItems.push({
+      product_id: productId,
+      product_name: productName,
+      unit: unit,
+      qty: 1
+    });
+
+    mergeCurrentItems();
+    renderCurrentOrder();
+    clearMessage();
+  }
+
+  function mergeCurrentItems() {
+    const map = {};
+
+    currentItems.forEach(item => {
+      const key = item.product_id + '||' + item.unit;
+
+      if (!map[key]) {
+        map[key] = {
+          product_id: item.product_id,
+          product_name: item.product_name,
+          unit: item.unit,
+          qty: 0
+        };
+      }
+
+      map[key].qty += Number(item.qty) || 0;
+    });
+
+    currentItems = Object.values(map).filter(item => item.qty > 0);
+  }
+
+  function renderCurrentOrder() {
+    const el = document.getElementById('currentOrder');
+    const btn = document.getElementById('submitBtn');
+
+    if (!currentItems.length) {
+      el.innerHTML = '<div class="empty">請先從上方加入商品</div>';
+      btn.disabled = true;
+      return;
+    }
+
+    el.innerHTML = currentItems.map((item, index) => `
+      <div class="order-item">
+        <div class="order-name">${escapeHtml(item.product_name)}</div>
+        <div class="order-meta">
+          商品編號：${escapeHtml(item.product_id)}<br>
+          單位：${escapeHtml(item.unit)}
+        </div>
+
+        <div class="order-actions">
+          <input
+            class="qty-input"
+            type="number"
+            min="0"
+            step="1"
+            value="${Number(item.qty)}"
+            onchange="updateQty(${index}, this.value)"
+          />
+          <div class="unit-text">${escapeHtml(item.unit)}</div>
+          <button class="remove-btn" type="button" onclick="removeItem(${index})">刪除</button>
+        </div>
+      </div>
+    `).join('');
+
+    btn.disabled = false;
+  }
+
+  function updateQty(index, value) {
+    const qty = Number(value);
+    currentItems[index].qty = isNaN(qty) ? 0 : qty;
+    currentItems = currentItems.filter(item => item.qty > 0);
+    renderCurrentOrder();
+  }
+
+  function removeItem(index) {
+    currentItems.splice(index, 1);
+    renderCurrentOrder();
+  }
+
+  function clearCurrentOrder() {
+    currentItems = [];
+    renderCurrentOrder();
+    clearMessage();
+  }
+
+  async function submitOrder() {
+    clearMessage();
+
+    const validItems = currentItems.filter(item => Number(item.qty) > 0);
+
+    if (!token) {
+      setError('缺少 token');
+      return;
+    }
+
+    if (!validItems.length) {
+      setError('請至少保留一項數量大於 0 的商品');
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '送出中...';
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify({
+          token: token,
+          items: validItems
+        })
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        setError(data.message || '送出失敗');
+        return;
+      }
+
+      setSuccess(`送出成功，訂單編號：${data.order_no}`);
+      clearCurrentOrder();
+
+    } catch (err) {
+      setError('送出失敗：' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '送出訂單';
+    }
+  }
+
+  function setSuccess(msg) {
+    document.getElementById('messageBox').innerHTML =
+      `<div class="message success">${escapeHtml(msg)}</div>`;
+  }
+
+  function setError(msg) {
+    document.getElementById('messageBox').innerHTML =
+      `<div class="message error">${escapeHtml(msg)}</div>`;
+  }
+
+  function clearMessage() {
+    document.getElementById('messageBox').innerHTML = '';
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function escapeJs(str) {
+    return String(str)
+      .replaceAll('\\', '\\\\')
+      .replaceAll("'", "\\'")
+      .replaceAll('"', '\\"');
+  }
+
+  loadDashboard();
 </script>
-
 </body>
 </html>
