@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>客戶補貨系統</title>
+  <style>
+    body {
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      margin: 0;
+      padding: 16px;
+      background: #f5f5f5;
+      color: #222;
+    }
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    h1, h2, h3 {
+      margin: 0 0 12px;
+    }
+    .muted {
+      color: #666;
+      font-size: 14px;
+    }
+    .history-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 1px solid #ddd;
+      background: #fff;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .history-btn:hover {
+      background: #f9f9f9;
+    }
+    .item-row {
+      display: grid;
+      grid-template-columns: 1fr 100px 70px;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .item-row:last-child {
+      border-bottom: none;
+    }
+    .item-name {
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    .unit {
+      color: #666;
+      font-size: 13px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .btn {
+      display: inline-block;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn-primary {
+      background: #111;
+      color: #fff;
+      width: 100%;
+    }
+    .btn-primary:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+    .success {
+      background: #edf8ed;
+      color: #166534;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+    .error {
+      background: #fdecec;
+      color: #b91c1c;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+    .empty {
+      color: #666;
+      padding: 12px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>客戶補貨系統</h1>
+      <div id="customerInfo" class="muted">讀取中...</div>
+    </div>
+
+    <div class="card">
+      <h2>最近 5 筆訂單</h2>
+      <div id="historyList">讀取中...</div>
+    </div>
+
+    <div class="card">
+      <h2>本次訂單</h2>
+      <div id="currentOrder" class="empty">請先點選上方某一筆訂單複製</div>
+      <button id="submitBtn" class="btn btn-primary" onclick="submitOrder()" disabled>送出訂單</button>
+      <div id="messageBox"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx5KCAvAp0PVvRXlvBIBTPz2uriB_lIEyrBDi9qA0FpCaRzSVdglYVX_DcuLUi-zi76xg/exec';
+
+    let token = '';
+    let customerId = '';
+    let customerName = '';
+    let currentItems = [];
+
+    function getTokenFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('token') || '';
+    }
+
+    async function loadHistory() {
+      token = getTokenFromUrl();
+
+      if (!token) {
+        showError('網址缺少 token');
+        document.getElementById('historyList').innerHTML = '';
+        document.getElementById('customerInfo').textContent = '無法辨識客戶';
+        return;
+      }
+
+      try {
+        const url = `${API_URL}?action=history&token=${encodeURIComponent(token)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.success) {
+          showError(data.message || '讀取失敗');
+          document.getElementById('historyList').innerHTML = '';
+          document.getElementById('customerInfo').textContent = '無法辨識客戶';
+          return;
+        }
+
+        customerId = data.customer_id;
+        customerName = data.customer_name;
+
+        document.getElementById('customerInfo').textContent =
+          `${customerName}（${customerId}）`;
+
+        renderHistory(data.orders || []);
+      } catch (err) {
+        showError('讀取歷史訂單失敗：' + err.message);
+      }
+    }
+
+    function renderHistory(orders) {
+      const el = document.getElementById('historyList');
+
+      if (!orders.length) {
+        el.innerHTML = '<div class="empty">目前沒有歷史訂單</div>';
+        return;
+      }
+
+      el.innerHTML = orders.map((order, index) => {
+        return `
+          <button class="history-btn" onclick="copyOrder(${index})">
+            <div><strong>${order.order_date}</strong></div>
+            <div class="muted">共 ${order.items.length} 項，點我直接複製</div>
+          </button>
+        `;
+      }).join('');
+
+      window._orders = orders;
+    }
+
+    function copyOrder(index) {
+      const orders = window._orders || [];
+      const selected = orders[index];
+      if (!selected) return;
+
+      currentItems = selected.items.map(item => ({
+        product_id: item.product_id,
+        product_name: item.product_name,
+        unit: item.unit,
+        qty: item.qty
+      }));
+
+      renderCurrentOrder();
+      clearMessage();
+    }
+
+    function renderCurrentOrder() {
+      const el = document.getElementById('currentOrder');
+      const btn = document.getElementById('submitBtn');
+
+      if (!currentItems.length) {
+        el.innerHTML = '<div class="empty">請先點選上方某一筆訂單複製</div>';
+        btn.disabled = true;
+        return;
+      }
+
+      el.innerHTML = currentItems.map((item, index) => `
+        <div class="item-row">
+          <div class="item-name">
+            <div>${escapeHtml(item.product_name)}</div>
+            <div class="unit">商品編號：${escapeHtml(item.product_id)}｜單位：${escapeHtml(item.unit)}</div>
+          </div>
+          <div>
+            <input type="number" min="0" step="1" value="${item.qty}" onchange="updateQty(${index}, this.value)" />
+          </div>
+          <div>${escapeHtml(item.unit)}</div>
+        </div>
+      `).join('');
+
+      btn.disabled = false;
+    }
+
+    function updateQty(index, value) {
+      const qty = Number(value);
+      currentItems[index].qty = isNaN(qty) ? 0 : qty;
+    }
+
+    async function submitOrder() {
+      clearMessage();
+
+      if (!token) {
+        showError('缺少 token');
+        return;
+      }
+
+      const validItems = currentItems.filter(item => Number(item.qty) > 0);
+
+      if (!validItems.length) {
+        showError('請至少保留一項數量大於 0 的商品');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = '送出中...';
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            token: token,
+            items: validItems
+          })
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+          showError(data.message || '送出失敗');
+          return;
+        }
+
+        showSuccess(`送出成功，訂單編號：${data.order_no}`);
+      } catch (err) {
+        showError('送出失敗：' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '送出訂單';
+      }
+    }
+
+    function showSuccess(msg) {
+      document.getElementById('messageBox').innerHTML =
+        `<div class="success">${escapeHtml(msg)}</div>`;
+    }
+
+    function showError(msg) {
+      document.getElementById('messageBox').innerHTML =
+        `<div class="error">${escapeHtml(msg)}</div>`;
+    }
+
+    function clearMessage() {
+      document.getElementById('messageBox').innerHTML = '';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    loadHistory();
+  </script>
+</body>
+</html>
